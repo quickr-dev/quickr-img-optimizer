@@ -1,1 +1,3 @@
-@import "@radix-ui/themes/styles";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
