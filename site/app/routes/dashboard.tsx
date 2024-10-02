@@ -4,10 +4,10 @@ export const meta: MetaFunction = () => {
   return [{ title: "Quickr" }, { name: "description", content: "Dev tools" }]
 }
 
-export default function Index() {
+export default function Page() {
   return (
     <>
-      <div>Home</div>
+      <div>Dashboard</div>
     </>
   )
 }
