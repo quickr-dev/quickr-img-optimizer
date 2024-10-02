@@ -1,4 +1,5 @@
 import type { MetaFunction } from "@remix-run/cloudflare"
+import { Img } from "./Img"
 
 export const meta: MetaFunction = () => {
   return [{ title: "Quickr" }, { name: "description", content: "Dev tools" }]
@@ -13,57 +14,8 @@ export default function Index() {
   return (
     <>
       <div>
-        <Image src={url2mb} />
+        <Img src={url2mb} />
       </div>
     </>
   )
-}
-
-type Rec = Record<string, string | undefined>
-type ImageProps = JSX.IntrinsicElements["img"]
-
-const Image = ({ src, ...props }: ImageProps) => {
-  if (!src) return <img {...props} />
-
-  const opts: Rec = {
-    width: props.width?.toString(),
-    height: props.height?.toString(),
-  }
-
-  let srcSet, sizes
-
-  if (props.width) {
-    srcSet = [ensureInt(props.width), ensureInt(props.width) * 2]
-      .map((width, i) => `${getUrl(src, opts, { width: width.toString() })} ${i + 1}x`)
-      .join(", ")
-  } else {
-    srcSet = [640, 1200, 2048, 3840]
-      .map((width) => `${getUrl(src, opts, { width: width.toString() })} ${width}w`)
-      .join(", ")
-    sizes = "100vw"
-  }
-
-  return (
-    <img
-      src={getUrl(src, opts, {})}
-      srcSet={srcSet}
-      sizes={sizes}
-      decoding="async"
-      loading="lazy"
-      {...props}
-    />
-  )
-}
-
-const ensureInt = (v: string | number) => {
-  return typeof v === "string" ? parseInt(v, 10) : v
-}
-
-const getUrl = (src: string, opts: Rec, replacements: Rec) => {
-  const optsStr = Object.entries({ ...opts, ...replacements })
-    .filter(([_, v]) => !!v)
-    .map(([k, v]) => `${k}=${v}`)
-    .join(",")
-
-  return `https://img.quickr.dev/${optsStr}/${src}`
 }
