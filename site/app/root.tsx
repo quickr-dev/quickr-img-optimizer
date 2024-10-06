@@ -27,6 +27,8 @@ const theme = createTheme({
     fontFamily: `Inter, ${DEFAULT_THEME.fontFamily}`,
   },
   defaultRadius: "xl",
+  primaryColor: "gray",
+  primaryShade: 9,
 })
 
 export function Layout({ children }: { children: React.ReactNode }) {

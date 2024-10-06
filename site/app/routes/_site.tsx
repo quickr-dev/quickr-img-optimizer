@@ -1,36 +1,41 @@
-import { Button, Card, Container, Flex, SimpleGrid } from "@mantine/core"
+import { Box, Button, Card, Container, Flex } from "@mantine/core"
 import { Outlet } from "@remix-run/react"
 import { A } from "~/components/ui/A"
 
 export default function Layout() {
   return (
     <>
-      <Container component="header">
-        <SimpleGrid cols={3} py="sm">
-          <A to="/" underline="never" c="black" fw={600} fz="lg">
-            Quickr
-          </A>
+      <Container component="header" mt="md">
+        <Flex align="center">
+          <Box w="20vw">
+            <A to="/" underline="never" c="black" fw={600} fz="lg">
+              Quickr
+            </A>
+          </Box>
 
-          <Card component="nav" withBorder shadow="xs" p={0}>
-            <Flex py="xs" align="center" justify="center" gap="xl">
-              <A size="sm" to="/" c="gray.7">
-                Home
-              </A>
-              <A size="sm" to="/" c="gray.7">
-                Pricing
-              </A>
-              <A size="sm" to="/dashboard" c="gray.7">
-                Dashboard
-              </A>
-            </Flex>
-          </Card>
-
-          <Flex justify="end">
-            <Button variant="default" size="xs">
-              Feedback
-            </Button>
+          <Flex w="60vw" justify="center">
+            <Card component="nav" w="fit-content" px="xl" withBorder shadow="xs" p={0}>
+              <Flex py="sm" align="center" justify="center" gap="xl">
+                <A size="sm" to="/">
+                  Home
+                </A>
+                <A size="sm" to="/">
+                  Pricing
+                </A>
+                <A size="sm" to="/dashboard">
+                  Dashboard
+                </A>
+              </Flex>
+            </Card>
           </Flex>
-        </SimpleGrid>
+
+          <Flex justify="end" align="center" gap="md" w="20vw">
+            <A to="/login" size="sm" fw={500}>
+              Log in
+            </A>
+            <Button size="sm">Sign up</Button>
+          </Flex>
+        </Flex>
       </Container>
 
       <Container component="main" size="sm">
