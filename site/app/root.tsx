@@ -14,6 +14,13 @@ export const links: LinksFunction = () => [
 ]
 
 const theme = createTheme({
+  spacing: {
+    xs: `calc(${4 / 16}rem * var(--mantine-scale))`,
+    sm: `calc(${8 / 16}rem * var(--mantine-scale))`,
+    md: `calc(${12 / 16}rem * var(--mantine-scale))`,
+    lg: `calc(${16 / 16}rem * var(--mantine-scale))`,
+    xl: `calc(${24 / 16}rem * var(--mantine-scale))`,
+  },
   fontFamily: `Inter, sans-serif`,
   fontFamilyMonospace: `Monaco, Courier, monospace`,
   headings: {
