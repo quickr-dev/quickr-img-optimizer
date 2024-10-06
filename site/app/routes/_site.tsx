@@ -6,9 +6,11 @@ export default function Layout() {
     <>
       <Container component="header">
         <SimpleGrid cols={3} py="sm">
-          <Link to="/">Quickr</Link>
+          <Link to="/" style={{ fontWeight: 400 }}>
+            quickr
+          </Link>
 
-          <Card withBorder shadow="xs" radius="xl" p={0}>
+          <Card withBorder shadow="xs" p={0}>
             <Flex component="nav" align="center" justify="center" gap="md">
               <Link to="/">home</Link>
               <Link to="/dashboard">dashboard</Link>
