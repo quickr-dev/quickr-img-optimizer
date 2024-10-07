@@ -9,7 +9,7 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   return (
     <main>
-      <Box role="hero" my={60} ta="center" w="fit-content" mx="auto">
+      <Box role="hero" my={100} ta="center" w="fit-content" mx="auto">
         {/* <Text fz={"md"} c="gray.6" mt="lg">
           Quickr: fair-priced, productivity-focused dev tooling
         </Text> */}
@@ -32,10 +32,10 @@ export default function Index() {
         <Text fz={"xl"} c="gray.6" mt="lg">
           Lightning fast image optimization, transformation, and global CDN
           <br />
-          for productive development teams.
+          for productivity-focused development teams.
         </Text>
 
-        <Flex mt={60} gap="lg" justify="center">
+        <Flex mt={"xl"} gap="lg" justify="center">
           <Button>Start for free</Button>
           <Button variant="outline">How it works</Button>
         </Flex>
