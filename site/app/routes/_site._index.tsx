@@ -1,9 +1,8 @@
 import {
-  Anchor,
   Box,
   Button,
+  Card,
   Container,
-  FileButton,
   Flex,
   Input,
   LoadingOverlay,
@@ -42,7 +41,7 @@ export default function Index() {
         </Title>
 
         <Text fz={"xl"} c="gray.6" mt="lg">
-          Transform, optimize, and serve images near to your users.
+          Transform, optimize, and serve images near your users.
         </Text>
 
         <Button mt={60}>Start for free</Button>
@@ -97,6 +96,7 @@ export default function Index() {
 
 const Try = () => {
   const [file, setFile] = useState<File | null>(null)
+  const [text, setText] = useState("")
   const [imageUrl, setImageUrl] = useState("")
   const [width, setWidth] = useState(400)
   const [quality, setQuality] = useState(75)
@@ -109,8 +109,17 @@ const Try = () => {
       </Title>
 
       <Container size="xs" mb="xl">
-        <Input placeholder="Paste image URL" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
-        <Text fz="xs" ta="center">
+        <Flex gap="sm">
+          <Input
+            flex="1"
+            placeholder="Paste image URL"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+          />
+          <Button onClick={() => setImageUrl(text)}>Send</Button>
+        </Flex>
+
+        {/* <Text fz="xs" ta="center">
           or{" "}
           <FileButton onChange={setFile} accept="image/*">
             {(props) => (
@@ -119,86 +128,78 @@ const Try = () => {
               </Anchor>
             )}
           </FileButton>
-        </Text>
+        </Text> */}
       </Container>
 
-      <Container>
-        <Flex
-          wrap="wrap"
-          align="center"
-          direction={{ xs: "column", md: "row" }}
-          justify={{ xs: "center", md: "space-around" }}
-          gap="xl"
-          ta={{ xs: "center", md: "left" }}
-        >
-          <Box flex="1" miw={200}>
-            <Text fz="lg" fw={500} mb="sm">
-              Original
-            </Text>
+      {imageUrl && (
+        <Container>
+          <Flex
+            wrap="wrap"
+            align="center"
+            direction={{ xs: "column", md: "row" }}
+            justify={{ xs: "center", md: "space-around" }}
+            gap="xl"
+            ta={{ xs: "center", md: "left" }}
+          >
+            <ImageExample label="Original" imageUrl={imageUrl} />
 
-            <ImageExample imageUrl="https://weleverimages.blob.core.windows.net/app-images/9f28732a-6fd8-469f-ba43-407ceac92c39-12jpg" />
-          </Box>
+            <Flex flex="1" direction="column" gap="xl" miw={400}>
+              <Flex align="center" gap="lg" justify="space-between">
+                <Text w={50} size="sm">
+                  Width
+                </Text>
+                <Slider
+                  flex="1"
+                  min={200}
+                  max={800}
+                  defaultValue={400}
+                  step={100}
+                  labelAlwaysOn
+                  onChangeEnd={setWidth}
+                />
+              </Flex>
+              <Flex align="center" gap="lg">
+                <Text w={50} size="sm">
+                  Quality
+                </Text>
+                <Slider
+                  flex="1"
+                  min={0}
+                  max={100}
+                  defaultValue={75}
+                  step={5}
+                  labelAlwaysOn
+                  onChangeEnd={setQuality}
+                />
+              </Flex>
+              <Flex align="center" gap="lg">
+                <Text w={50} size="sm">
+                  Blur
+                </Text>
+                <Slider
+                  flex="1"
+                  min={0}
+                  max={100}
+                  defaultValue={0}
+                  step={1}
+                  labelAlwaysOn
+                  onChangeEnd={setBlur}
+                />
+              </Flex>
+            </Flex>
 
-          <Flex flex="1" direction="column" gap="xl" miw={400}>
-            <Flex align="center" gap="lg" justify="space-between">
-              <Text w={50} size="sm">
-                Width
-              </Text>
-              <Slider
-                flex="1"
-                min={200}
-                max={800}
-                defaultValue={400}
-                step={100}
-                labelAlwaysOn
-                onChangeEnd={setWidth}
-              />
-            </Flex>
-            <Flex align="center" gap="lg">
-              <Text w={50} size="sm">
-                Quality
-              </Text>
-              <Slider
-                flex="1"
-                min={0}
-                max={100}
-                defaultValue={75}
-                step={5}
-                labelAlwaysOn
-                onChangeEnd={setQuality}
-              />
-            </Flex>
-            <Flex align="center" gap="lg">
-              <Text w={50} size="sm">
-                Blur
-              </Text>
-              <Slider
-                flex="1"
-                min={0}
-                max={100}
-                defaultValue={0}
-                step={1}
-                labelAlwaysOn
-                onChangeEnd={setBlur}
-              />
-            </Flex>
-          </Flex>
-
-          <Box flex="1" ta={{ md: "right" }} miw={200}>
-            <Text fz="lg" fw={500} mb="sm">
-              Optimized
-            </Text>
             <ImageExample
-              imageUrl={`https://img.quickr.dev/width=${width},quality=${quality},blur=${blur}/https://weleverimages.blob.core.windows.net/app-images/9f28732a-6fd8-469f-ba43-407ceac92c39-12jpg`}
+              label="Optimized"
+              imageUrl={`https://img.quickr.dev/width=${width},quality=${quality},blur=${blur}/${imageUrl}`}
             />
-          </Box>
-        </Flex>
-      </Container>
+          </Flex>
+        </Container>
+      )}
     </>
   )
 }
 
-const ImageExample = ({ imageUrl }: { imageUrl: string }) => {
+const ImageExample = ({ imageUrl, label }: { imageUrl: string; label: string }) => {
   const [image, setImage] = useState<string | null>(null)
   const [sizeKb, setSizeKb] = useState<string | null>(null)
   const [fetchTime, setFetchTime] = useState<string | null>(null)
@@ -238,16 +239,20 @@ const ImageExample = ({ imageUrl }: { imageUrl: string }) => {
   }, [imageUrl])
 
   return (
-    <Box pos="relative" h={200}>
-      {image && (
-        <>
-          <img src={image} alt="example image" width={200} height={200} style={{ objectFit: "cover" }} />
-          <Text>
-            {sizeKb} KB in {fetchTime}ms
-          </Text>
-        </>
-      )}
-      <LoadingOverlay visible={!image} />
-    </Box>
+    <Card p="xs" withBorder flex="1" ta="center" miw={200}>
+      <Text fz="lg" fw={500} mb="sm">
+        {label}
+      </Text>
+
+      <Card.Section>
+        {image && (
+          <>
+            <img src={image} alt="example image" style={{ objectFit: "contain" }} height={150} />
+          </>
+        )}
+        <LoadingOverlay visible={!image} />
+      </Card.Section>
+      <Text>{sizeKb} KB</Text>
+    </Card>
   )
 }
