@@ -1,10 +1,5 @@
 import { Box, Button, Code, Container, Flex, Progress, SimpleGrid, Space, Text, Title } from "@mantine/core"
-import type { MetaFunction } from "@remix-run/cloudflare"
 import { TrySection } from "./TrySection"
-
-export const meta: MetaFunction = () => {
-  return [{ title: "Quickr" }, { name: "description", content: "Dev tools" }]
-}
 
 export default function Index() {
   return (
