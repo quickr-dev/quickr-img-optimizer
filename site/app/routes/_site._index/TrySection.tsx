@@ -3,7 +3,9 @@ import { useEffect, useState } from "react"
 
 export const TrySection = () => {
   const [file, setFile] = useState<File | null>(null)
-  const [text, setText] = useState("")
+  const [text, setText] = useState(
+    "https://m.media-amazon.com/images/M/MV5BNTljZDc0MzAtZWMzMC00NzBhLWEwZWMtZmIxY2Q3ZGNmYTcwXkEyXkFqcGdeQWRvb2xpbmhk._V1_.jpg"
+  )
   const [imageUrl, setImageUrl] = useState("")
   const [width, setWidth] = useState(400)
   const [quality, setQuality] = useState(75)
@@ -60,8 +62,8 @@ export const TrySection = () => {
                   min={200}
                   max={800}
                   defaultValue={400}
+                  label={(value) => `${value}px`}
                   step={100}
-                  labelAlwaysOn
                   onChangeEnd={setWidth}
                 />
               </Flex>
@@ -71,11 +73,10 @@ export const TrySection = () => {
                 </Text>
                 <Slider
                   flex="1"
-                  min={0}
+                  min={1}
                   max={100}
+                  label={(value) => `${value}%`}
                   defaultValue={75}
-                  step={5}
-                  labelAlwaysOn
                   onChangeEnd={setQuality}
                 />
               </Flex>
@@ -83,15 +84,7 @@ export const TrySection = () => {
                 <Text w={50} size="sm">
                   Blur
                 </Text>
-                <Slider
-                  flex="1"
-                  min={0}
-                  max={100}
-                  defaultValue={0}
-                  step={1}
-                  labelAlwaysOn
-                  onChangeEnd={setBlur}
-                />
+                <Slider flex="1" min={0} max={100} defaultValue={0} step={1} onChangeEnd={setBlur} />
               </Flex>
             </Flex>
 
