@@ -1,11 +1,13 @@
 #:schema node_modules/wrangler/config-schema.json
 name = "image-optimizer"
 main = "src/index.ts"
-compatibility_date = "2024-09-25"
+compatibility_date = "2024-09-02"
 compatibility_flags = ["nodejs_compat"]
 workers_dev = false
-route = { pattern = "*.img.quickr.dev", zone_id = "38f8c555a67ecfa479136a098231b95d" }
+route = { pattern = "img.quickr.dev", custom_domain = true }
 
+[observability]
+enabled = true
 
 # Automatically place your workloads in an optimal location to minimize latency.
 # If you are running back-end logic in a Worker, running it closer to your back-end infrastructure

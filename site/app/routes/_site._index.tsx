@@ -2,11 +2,11 @@ import {
   Anchor,
   Box,
   Button,
-  Code,
   Container,
   FileButton,
   Flex,
   Input,
+  LoadingOverlay,
   Progress,
   SimpleGrid,
   Slider,
@@ -37,13 +37,12 @@ export default function Index() {
               fontSize: "90%",
             }}
           >
-            Quicker & Cheaper
+            for the Serverless Era
           </span>
         </Title>
 
         <Text fz={"xl"} c="gray.6" mt="lg">
-          Global CDN, image transformations and <Code fz="md">next/image</Code>-like optimization. <br />
-          5x cheaper than Vercel image.
+          Transform, optimize, and serve images near to your users.
         </Text>
 
         <Button mt={60}>Start for free</Button>
@@ -101,6 +100,7 @@ const Try = () => {
   const [imageUrl, setImageUrl] = useState("")
   const [width, setWidth] = useState(400)
   const [quality, setQuality] = useState(75)
+  const [blur, setBlur] = useState(0)
 
   return (
     <>
@@ -108,7 +108,7 @@ const Try = () => {
         Try
       </Title>
 
-      <Container size="xs">
+      <Container size="xs" mb="xl">
         <Input placeholder="Paste image URL" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
         <Text fz="xs" ta="center">
           or{" "}
@@ -123,68 +123,85 @@ const Try = () => {
       </Container>
 
       <Container>
-        <SimpleGrid cols={{ md: 2, sm: 1 }}>
-          <Flex direction="column">
-            <Text fw={500} fz="md" mb="sm">
+        <Flex
+          wrap="wrap"
+          align="center"
+          direction={{ xs: "column", md: "row" }}
+          justify={{ xs: "center", md: "space-around" }}
+          gap="xl"
+          ta={{ xs: "center", md: "left" }}
+        >
+          <Box flex="1" miw={200}>
+            <Text fz="lg" fw={500} mb="sm">
               Original
             </Text>
-            <Flex>
-              <img src={"/images/example.jpeg"} width={200} height={200} style={{ objectFit: "cover" }} />
+
+            <ImageExample imageUrl="https://weleverimages.blob.core.windows.net/app-images/9f28732a-6fd8-469f-ba43-407ceac92c39-12jpg" />
+          </Box>
+
+          <Flex flex="1" direction="column" gap="xl" miw={400}>
+            <Flex align="center" gap="lg" justify="space-between">
+              <Text w={50} size="sm">
+                Width
+              </Text>
+              <Slider
+                flex="1"
+                min={200}
+                max={800}
+                defaultValue={400}
+                step={100}
+                labelAlwaysOn
+                onChangeEnd={setWidth}
+              />
+            </Flex>
+            <Flex align="center" gap="lg">
+              <Text w={50} size="sm">
+                Quality
+              </Text>
+              <Slider
+                flex="1"
+                min={0}
+                max={100}
+                defaultValue={75}
+                step={5}
+                labelAlwaysOn
+                onChangeEnd={setQuality}
+              />
+            </Flex>
+            <Flex align="center" gap="lg">
+              <Text w={50} size="sm">
+                Blur
+              </Text>
+              <Slider
+                flex="1"
+                min={0}
+                max={100}
+                defaultValue={0}
+                step={1}
+                labelAlwaysOn
+                onChangeEnd={setBlur}
+              />
             </Flex>
           </Flex>
 
-          <Flex direction="column">
+          <Box flex="1" ta={{ md: "right" }} miw={200}>
             <Text fz="lg" fw={500} mb="sm">
               Optimized
             </Text>
-
-            <Flex gap="md">
-              <img
-                src={`https://img.quickr.dev/width=${width},quality=${quality}/https://weleverimages.blob.core.windows.net/app-images/9f28732a-6fd8-469f-ba43-407ceac92c39-12jpg`}
-                width={200}
-                height={200}
-                style={{ objectFit: "cover" }}
-              />
-              <Box>Size: 41.7 KB</Box>
-            </Flex>
-
-            <Flex w={400} mt="xl" direction="column" gap="xl">
-              <Flex align="center" gap="lg" justify="space-between">
-                <Text size="sm">Width</Text>
-                <Slider
-                  min={200}
-                  max={800}
-                  defaultValue={400}
-                  step={10}
-                  labelAlwaysOn
-                  onChangeEnd={setWidth}
-                  w={330}
-                />
-              </Flex>
-              <Flex align="center" gap="lg">
-                <Text size="sm">Quality</Text>
-                <Slider
-                  flex="1"
-                  min={0}
-                  max={100}
-                  defaultValue={75}
-                  step={5}
-                  labelAlwaysOn
-                  onChangeEnd={setQuality}
-                />
-              </Flex>
-            </Flex>
-          </Flex>
-        </SimpleGrid>
+            <ImageExample
+              imageUrl={`https://img.quickr.dev/width=${width},quality=${quality},blur=${blur}/https://weleverimages.blob.core.windows.net/app-images/9f28732a-6fd8-469f-ba43-407ceac92c39-12jpg`}
+            />
+          </Box>
+        </Flex>
       </Container>
     </>
   )
 }
 
-const ImageFetcher = (imageUrl: string) => {
+const ImageExample = ({ imageUrl }: { imageUrl: string }) => {
   const [image, setImage] = useState<string | null>(null)
   const [sizeKb, setSizeKb] = useState<string | null>(null)
-  const [fetchTime, setFetchTime] = useState<number | null>(null)
+  const [fetchTime, setFetchTime] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -204,7 +221,7 @@ const ImageFetcher = (imageUrl: string) => {
         setImage(objectUrl)
 
         const endTime = performance.now()
-        setFetchTime(endTime - startTime)
+        setFetchTime((endTime - startTime).toFixed(2))
       } catch (error) {
         setError("Error fetching image")
         console.error("There was a problem with the fetch operation:", error)
@@ -213,7 +230,6 @@ const ImageFetcher = (imageUrl: string) => {
 
     fetchImage()
 
-    // Cleanup function to revoke the object URL
     return () => {
       if (image) {
         URL.revokeObjectURL(image)
@@ -222,14 +238,16 @@ const ImageFetcher = (imageUrl: string) => {
   }, [imageUrl])
 
   return (
-    <div>
+    <Box pos="relative" h={200}>
       {image && (
         <>
-          <img src={image} alt="Fetched" style={{ maxWidth: "100%" }} />
-          <p>Fetch time: {fetchTime ? `${fetchTime.toFixed(2)} ms` : "Calculating..."}</p>
+          <img src={image} alt="example image" width={200} height={200} style={{ objectFit: "cover" }} />
+          <Text>
+            {sizeKb} KB in {fetchTime}ms
+          </Text>
         </>
       )}
-      {!image && <p>Loading...</p>}
-    </div>
+      <LoadingOverlay visible={!image} />
+    </Box>
   )
 }

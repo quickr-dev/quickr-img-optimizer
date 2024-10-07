@@ -2,6 +2,14 @@ import { Box, Button, Card, Container, Divider, Flex } from "@mantine/core"
 import { Outlet } from "@remix-run/react"
 import { A } from "~/components/ui/A"
 
+const Links = [
+  { href: "/", label: "Top" },
+  { href: "#try-it-out", label: "Try" },
+  { href: "#docs", label: "Docs" },
+  { href: "#pricing", label: "Pricing" },
+  { href: "#about", label: "About" },
+]
+
 export default function Layout() {
   return (
     <>
@@ -16,18 +24,11 @@ export default function Layout() {
           <Flex w="60vw" justify="center">
             <Card component="nav" w="fit-content" px="xl" withBorder shadow="xs" p={0}>
               <Flex py="sm" align="center" justify="center" gap="xl">
-                <A size="sm" to="/">
-                  Top
-                </A>
-                <A size="sm" to="#try-it-out">
-                  Try
-                </A>
-                <A size="sm" to="#pricing">
-                  Pricing
-                </A>
-                <A size="sm" to="#about">
-                  About
-                </A>
+                {Links.map((link) => (
+                  <A key={link.href} to={link.href} size="sm">
+                    {link.label}
+                  </A>
+                ))}
               </Flex>
             </Card>
           </Flex>
@@ -47,18 +48,11 @@ export default function Layout() {
 
       <Container size="md" component="footer" my="lg" ta="center">
         <Flex gap="xl" justify="center">
-          <A size="sm" to="/">
-            Top
-          </A>
-          <A size="sm" to="#try-it-out">
-            Try
-          </A>
-          <A size="sm" to="#pricing">
-            Pricing
-          </A>
-          <A size="sm" to="#about">
-            About
-          </A>
+          {Links.map((link) => (
+            <A key={link.href} to={link.href} size="sm">
+              {link.label}
+            </A>
+          ))}
         </Flex>
       </Container>
     </>

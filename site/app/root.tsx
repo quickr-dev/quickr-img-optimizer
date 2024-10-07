@@ -14,6 +14,13 @@ export const links: LinksFunction = () => [
 ]
 
 const theme = createTheme({
+  breakpoints: {
+    xs: "30em",
+    sm: "48em",
+    md: "64em",
+    lg: "74em",
+    xl: "90em",
+  },
   spacing: {
     xs: `calc(${4 / 16}rem * var(--mantine-scale))`,
     sm: `calc(${8 / 16}rem * var(--mantine-scale))`,
