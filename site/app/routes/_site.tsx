@@ -1,4 +1,4 @@
-import { Box, Button, Card, Container, Flex } from "@mantine/core"
+import { Box, Button, Card, Container, Divider, Flex } from "@mantine/core"
 import { Outlet } from "@remix-run/react"
 import { A } from "~/components/ui/A"
 
@@ -17,13 +17,16 @@ export default function Layout() {
             <Card component="nav" w="fit-content" px="xl" withBorder shadow="xs" p={0}>
               <Flex py="sm" align="center" justify="center" gap="xl">
                 <A size="sm" to="/">
-                  Home
+                  Top
                 </A>
-                <A size="sm" to="/">
+                <A size="sm" to="#try-it-out">
+                  Try
+                </A>
+                <A size="sm" to="#pricing">
                   Pricing
                 </A>
-                <A size="sm" to="/dashboard">
-                  Dashboard
+                <A size="sm" to="#about">
+                  About
                 </A>
               </Flex>
             </Card>
@@ -38,8 +41,25 @@ export default function Layout() {
         </Flex>
       </Container>
 
-      <Container component="main" size="sm">
-        <Outlet />
+      <Outlet />
+
+      <Divider mt={60} />
+
+      <Container size="md" component="footer" my="lg" ta="center">
+        <Flex gap="xl" justify="center">
+          <A size="sm" to="/">
+            Top
+          </A>
+          <A size="sm" to="#try-it-out">
+            Try
+          </A>
+          <A size="sm" to="#pricing">
+            Pricing
+          </A>
+          <A size="sm" to="#about">
+            About
+          </A>
+        </Flex>
       </Container>
     </>
   )
