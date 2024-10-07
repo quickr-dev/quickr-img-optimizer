@@ -1,4 +1,5 @@
 import { Box, Button, Code, Container, Flex, Progress, SimpleGrid, Space, Text, Title } from "@mantine/core"
+import { DocsSection } from "./DocsSection"
 import { TrySection } from "./TrySection"
 
 export default function Index() {
@@ -84,6 +85,9 @@ export default function Index() {
       <Space h={60} />
 
       <TrySection />
+      <Space h={60} />
+
+      <DocsSection />
     </main>
   )
 }
