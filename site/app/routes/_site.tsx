@@ -3,11 +3,10 @@ import { Outlet } from "@remix-run/react"
 import { A } from "~/components/ui/A"
 
 const Links = [
-  { href: "/", label: "Top" },
-  { href: "#try-it-out", label: "Try" },
+  { href: "/", label: "Home" },
+  { href: "#try", label: "Try" },
   { href: "#docs", label: "Docs" },
   { href: "#pricing", label: "Pricing" },
-  { href: "#about", label: "About" },
 ]
 
 export default function Layout() {
