@@ -208,14 +208,25 @@ const ImageExample = ({ imageUrl, label }: { imageUrl: string; label: string }) 
   useEffect(() => {
     const fetchImage = async () => {
       const startTime = performance.now()
+      setError("")
       try {
         const res = await fetch(imageUrl)
         if (!res.ok) {
           throw new Error("Network response was not ok")
         }
+        const contentType = res.headers.get("content-type")
+        console.log(">>>", contentType)
+        if (!contentType?.startsWith("image")) {
+          setError(`That URL doens't seem to be of an image, got content-type ${contentType}`)
+          return
+        }
         const contentLength = res.headers.get("content-length")
-        const sizeInKB = (parseInt(contentLength!, 10) / 1024).toFixed(2)
-        setSizeKb(sizeInKB)
+        if (contentLength) {
+          const sizeInKB = (parseInt(contentLength!, 10) / 1024).toFixed(2)
+          setSizeKb(sizeInKB)
+        } else {
+          setSizeKb(null)
+        }
 
         const blob = await res.blob()
         const objectUrl = URL.createObjectURL(blob)
@@ -224,7 +235,7 @@ const ImageExample = ({ imageUrl, label }: { imageUrl: string; label: string }) 
         const endTime = performance.now()
         setFetchTime((endTime - startTime).toFixed(2))
       } catch (error) {
-        setError("Error fetching image")
+        setError("Error fetching image, check the console")
         console.error("There was a problem with the fetch operation:", error)
       }
     }
@@ -244,15 +255,26 @@ const ImageExample = ({ imageUrl, label }: { imageUrl: string; label: string }) 
         {label}
       </Text>
 
+      <Text fz="xs">{error}</Text>
       <Card.Section>
-        {image && (
-          <>
-            <img src={image} alt="example image" style={{ objectFit: "contain" }} height={150} />
-          </>
-        )}
-        <LoadingOverlay visible={!image} />
+        <img
+          src={error || !image ? "https://placehold.co/200" : image}
+          alt="example image"
+          style={{ objectFit: "contain" }}
+          height={150}
+        />
+        {!error && <LoadingOverlay visible={!image} />}
       </Card.Section>
-      <Text>{sizeKb} KB</Text>
+
+      <Text fz="sm" c="gray.7">
+        {sizeKb ? (
+          `${sizeKb} KB`
+        ) : (
+          <Text component="span" c="gray.6">
+            Unknown size
+          </Text>
+        )}
+      </Text>
     </Card>
   )
 }
