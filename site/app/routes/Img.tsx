@@ -21,7 +21,7 @@ export const Img = ({ src, fallbackSrc, ...props }: ImageProps) => {
       .map((width, i) => `${imgUrl(src, opts, { width: width.toString() })} ${i + 1}x`)
       .join(", ")
   } else {
-    srcSet = [640, 750, 828, 1080, 1200, 1600, 1920, 2048]
+    srcSet = [640, 960, 1200, 1600, 1920]
       .map((width) => `${imgUrl(src, opts, { width: width.toString() })} ${width}w`)
       .join(", ")
   }

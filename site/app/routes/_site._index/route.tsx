@@ -53,12 +53,12 @@ export default function Index() {
             <Code mb="xs">{'<img src="img.jpg" />'}</Code>
             <Progress.Root size="xl" mb="md" w="100%" maw={400}>
               <Progress.Section value={100}>
-                <Progress.Label>757 KB</Progress.Label>
+                <Progress.Label>2.4 MB</Progress.Label>
               </Progress.Section>
             </Progress.Root>
 
             <img
-              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3"
+              src="https://assets.quickr.dev/example.jpeg"
               width={400}
               height={400}
               style={{ objectFit: "cover" }}
@@ -71,13 +71,13 @@ export default function Index() {
             </Text>
             <Code mb="xs">{'<img src="https://img.quickr.dev/width=500/img.jpg" />'}</Code>
             <Progress.Root size="xl" mb="md" w="100%" maw={400}>
-              <Progress.Section value={1.8}></Progress.Section>
-              <Progress.Section value={98.2} color="none">
-                <Progress.Label c="black">22.9 KB</Progress.Label>
+              <Progress.Section value={2}></Progress.Section>
+              <Progress.Section value={98} color="none">
+                <Progress.Label c="black">59.1 KB</Progress.Label>
               </Progress.Section>
             </Progress.Root>
             <img
-              src={`https://img.quickr.dev/width=500/https://images.unsplash.com/photo-1506744038136-46273834b3fb?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3`}
+              src={`https://img.quickr.dev/width=500/https://assets.quickr.dev/example.jpeg`}
               width={400}
               height={400}
               style={{ objectFit: "cover" }}

@@ -3,9 +3,7 @@ import { useEffect, useState } from "react"
 
 export const TrySection = () => {
   const [file, setFile] = useState<File | null>(null)
-  const [text, setText] = useState(
-    "https://m.media-amazon.com/images/M/MV5BNTljZDc0MzAtZWMzMC00NzBhLWEwZWMtZmIxY2Q3ZGNmYTcwXkEyXkFqcGdeQWRvb2xpbmhk._V1_.jpg"
-  )
+  const [text, setText] = useState("https://assets.quickr.dev/example2.jpeg")
   const [imageUrl, setImageUrl] = useState("")
   const [width, setWidth] = useState(400)
   const [quality, setQuality] = useState(75)
