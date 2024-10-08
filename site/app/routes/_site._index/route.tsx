@@ -1,6 +1,10 @@
 import { Box, Button, Code, Container, Flex, Progress, SimpleGrid, Space, Text, Title } from "@mantine/core"
-import { DocsSection } from "./DocsSection"
+import { MetaFunction } from "@remix-run/cloudflare"
 import { TrySection } from "./TrySection"
+
+export const meta: MetaFunction = () => {
+  return [{ title: "Quickr" }]
+}
 
 export default function Index() {
   return (
@@ -85,9 +89,6 @@ export default function Index() {
       <Space h={60} />
 
       <TrySection />
-      <Space h={60} />
-
-      <DocsSection />
     </main>
   )
 }

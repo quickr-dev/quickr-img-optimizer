@@ -40,77 +40,87 @@ export const TrySection = () => {
         </Text> */}
       </Container>
 
-      {imageUrl && (
-        <Container>
-          <Flex
-            wrap="wrap"
-            align="center"
-            direction={{ xs: "column", md: "row" }}
-            justify={{ xs: "center", md: "space-around" }}
-            gap="xl"
-            ta={{ xs: "center", md: "left" }}
-          >
-            <ImageExample label="Original" imageUrl={imageUrl} />
+      <Container>
+        <Flex
+          wrap="wrap"
+          align="center"
+          direction={{ xs: "column", md: "row" }}
+          justify={{ xs: "center", md: "space-around" }}
+          gap="xl"
+          ta={{ xs: "center", md: "left" }}
+        >
+          <ImageExample label="Original" imageUrl={imageUrl} />
 
-            <Flex flex="1" direction="column" gap="xl" miw={400}>
-              <Flex align="center" gap="lg" justify="space-between">
-                <Text w={50} size="sm">
-                  Width
-                </Text>
-                <Slider
-                  flex="1"
-                  min={200}
-                  max={800}
-                  defaultValue={400}
-                  label={(value) => `${value}px`}
-                  step={100}
-                  onChangeEnd={setWidth}
-                />
-              </Flex>
-              <Flex align="center" gap="lg">
-                <Text w={50} size="sm">
-                  Quality
-                </Text>
-                <Slider
-                  flex="1"
-                  min={1}
-                  max={100}
-                  label={(value) => `${value}%`}
-                  defaultValue={75}
-                  onChangeEnd={setQuality}
-                />
-              </Flex>
-              <Flex align="center" gap="lg">
-                <Text w={50} size="sm">
-                  Blur
-                </Text>
-                <Slider flex="1" min={0} max={100} defaultValue={0} step={1} onChangeEnd={setBlur} />
-              </Flex>
+          <Flex flex="1" direction="column" gap="xl" miw={400}>
+            <Flex align="center" gap="lg" justify="space-between">
+              <Text w={50} size="sm">
+                Width
+              </Text>
+              <Slider
+                flex="1"
+                min={200}
+                max={800}
+                defaultValue={400}
+                label={(value) => `${value}px`}
+                step={100}
+                onChangeEnd={setWidth}
+              />
             </Flex>
-
-            <ImageExample
-              label="Optimized"
-              imageUrl={`https://img.quickr.dev/width=${width},quality=${quality},blur=${blur}/${imageUrl}`}
-            />
+            <Flex align="center" gap="lg">
+              <Text w={50} size="sm">
+                Quality
+              </Text>
+              <Slider
+                flex="1"
+                min={1}
+                max={100}
+                label={(value) => `${value}%`}
+                defaultValue={75}
+                onChangeEnd={setQuality}
+              />
+            </Flex>
+            <Flex align="center" gap="lg">
+              <Text w={50} size="sm">
+                Blur
+              </Text>
+              <Slider flex="1" min={0} max={100} defaultValue={0} step={1} onChangeEnd={setBlur} />
+            </Flex>
           </Flex>
-        </Container>
-      )}
+
+          <ImageExample
+            label="Optimized"
+            imageUrl={imageUrl}
+            optimize={`https://img.quickr.dev/width=${width},quality=${quality},blur=${blur}/${imageUrl}`}
+          />
+        </Flex>
+      </Container>
     </>
   )
 }
 
-const ImageExample = ({ imageUrl, label }: { imageUrl: string; label: string }) => {
+const ImageExample = ({
+  imageUrl,
+  label,
+  optimize,
+}: {
+  imageUrl: string
+  label: string
+  optimize?: string
+}) => {
   const [image, setImage] = useState<string | null>(null)
   const [sizeKb, setSizeKb] = useState<string | null>(null)
   const [fetchTime, setFetchTime] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    if (imageUrl.length === 0) return
+
     const fetchImage = async () => {
       const startTime = performance.now()
       setError("")
+
       try {
-        const res = await fetch(imageUrl)
+        const res = await fetch(optimize || imageUrl)
         if (!res.ok) {
           throw new Error("Network response was not ok")
         }
@@ -147,7 +157,7 @@ const ImageExample = ({ imageUrl, label }: { imageUrl: string; label: string }) 
         URL.revokeObjectURL(image)
       }
     }
-  }, [imageUrl])
+  }, [imageUrl, optimize])
 
   return (
     <Card p="xs" withBorder flex="1" ta="center" miw={200}>
@@ -163,7 +173,7 @@ const ImageExample = ({ imageUrl, label }: { imageUrl: string; label: string }) 
           style={{ objectFit: "contain" }}
           height={150}
         />
-        {!error && <LoadingOverlay visible={!image} />}
+        {imageUrl && !error && <LoadingOverlay visible={!image} />}
       </Card.Section>
 
       <Text fz="sm" c="gray.7">
