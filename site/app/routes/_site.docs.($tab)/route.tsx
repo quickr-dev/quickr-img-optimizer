@@ -4,8 +4,7 @@ import { useState } from "react"
 
 import { CodeHighlightTabs } from "@mantine/code-highlight"
 import "@mantine/code-highlight/styles.css"
-import { IconBrandTypescript } from "@tabler/icons-react"
-import React from "react"
+import { IconBrandTypescript, IconFileTypeHtml } from "@tabler/icons-react"
 
 export const meta: MetaFunction = () => {
   return [{ title: "Docs | Quickr" }]
@@ -186,7 +185,7 @@ export default function Page() {
       </List>
 
       <CodeHighlightTabs
-        mt="lg"
+        mt="xl"
         getFileIcon={() => <IconBrandTypescript size={18} />}
         code={[
           { fileName: "imageLoader.js", code: imageLoaderJS, language: "tsx" },
@@ -207,10 +206,128 @@ const ReactTabPanel = () => {
 }
 
 const VanillaTabPanel = () => {
+  const scriptJs = `
+;(() => {
+  // Update variables below as necessary
+  const PROD_HOSTNAME = 'YOUR_PRODUCTION_HOSTNAME';
+  const optimizeOnlyInProduction = true;
+
+  const origin = new URL(location.href).origin;
+  const isProduction = origin.includes(PROD_HOSTNAME) || !origin.includes('localhost') && !origin.includes('127.0.0.1');
+
+  document.querySelectorAll('img[data-src]').forEach((img) => {
+    const { width, height } = img;
+    const { src, transformations = "" } = img.dataset;
+    const transformationsObject = transformationsAsObject(transformations);
+    transformationsObject.width ||= width === 0 ? undefined : width;
+    transformationsObject.height ||= height === 0 ? undefined : height;
+
+    img.loading = 'lazy';
+    img.decoding = 'async';
+
+    if (optimizeOnlyInProduction && !isProduction) {
+      img.src = img.dataset.src;
+    } else if (src.startsWith('http')) {
+      img.src = optimizedSrc(src, transformationsObject);
+      img.srcset = optimizedSrcSet(src, transformationsObject);
+    } else if (isProduction) {
+      // 'src' is a relative path, e.g. "/images/example.jpg"
+      img.src = optimizedSrc(\`\${origin}\${src}\`, transformationsObject);
+      img.srcset = optimizedSrcSet(src, transformationsObject);
+    } else {
+      img.src = img.dataset.src;
+    }
+  });
+
+
+  function optimizedSrc(src, transformationsObject) {
+    return \`https://img.quickr.dev/\${transformationsAsString(transformationsObject)}/\${src}\`
+  }
+
+  function optimizedSrcSet(src, transformationsObject) {
+    transformationsObject.fit ||= "scale-down";
+
+    if (transformationsObject.width) {
+      return \`
+        \${optimizedSrc(src, transformationsObject)} 1x,
+        \${optimizedSrc(src, {...transformationsObject, width: Math.min(transformationsObject.width * 2, 1920)})} 2x
+      \`;
+    } else {
+      return \`
+        \${optimizedSrc(src, {...transformationsObject, width: 640})} 640w,
+        \${optimizedSrc(src, {...transformationsObject, width: 960})} 960w,
+        \${optimizedSrc(src, {...transformationsObject, width: 1200})} 1200w,
+        \${optimizedSrc(src, {...transformationsObject, width: 1600})} 1600w,
+        \${optimizedSrc(src, {...transformationsObject, width: 1920})} 1920w
+      \`;
+    }
+  }
+
+  /**
+   * @param {String} transformations e.g. 'width=800,fit=scale-down'
+   * @return {Object} e.g. {width: 800, fit: 'scale-down'}
+   */
+  function transformationsAsObject(transformations) {
+    return Object.fromEntries(
+      transformations.split(',').filter(Boolean).map(pair => {
+        const [key, value] = pair.split('=');
+        return [key, isNaN(value) ? value : Number(value)];
+      })
+    );
+  }
+
+  /**
+   * @param {Object} transformations e.g. {width: 800, fit: 'scale-down'}
+   * @return {String} e.g. 'width=800,fit=scale-down'
+   */
+  function transformationsAsString(transformationsObject) {
+    return Object.entries(transformationsObject)
+      .filter(([_key, value]) => Boolean(value))
+      .map(([key, value]) => \`\${key}=\${value}\`)
+      .join(',');
+  }
+})();
+`
+  const indexHtml = `
+<div style="display: flex; gap: 10px;">
+  <img data-src="https://assets.quickr.dev/example.jpeg" width="300" />
+  <img data-src="https://assets.quickr.dev/example.jpeg" data-transformations="width=300" />
+</div>
+
+<div style="display: flex; gap: 10px; margin-top: 10px; align-items: start;">
+  <div style="width: 400px">
+    <img data-src="https://assets.quickr.dev/example2.jpeg" width="100%" />
+  </div>
+
+  <img data-src="https://assets.quickr.dev/example2.jpeg" width="400" data-transformations="blur=30,rotate=180" />
+</div>
+
+<script src="./quickr.js" defer></script>
+`
+
   return (
     <Tabs.Panel value="vanilla">
-      {" "}
-      <Text>Vanilla</Text>
+      <Text>Optimize images using data attributes</Text>
+
+      <Text mt="md">Live demo and code:</Text>
+      <List>
+        <ListItem>
+          <a href="https://quickr-vanilla-js.vercel.app/">https://quickr-vanilla-js.vercel.app/</a>
+        </ListItem>
+        <ListItem>
+          <a href="https://github.com/rafbgarcia/vanilla-example">
+            https://github.com/rafbgarcia/vanilla-example
+          </a>
+        </ListItem>
+      </List>
+
+      <CodeHighlightTabs
+        mt="xl"
+        code={[
+          { fileName: "quickr.js", code: scriptJs, language: "js", icon: <IconBrandTypescript size={18} /> },
+          { fileName: "index.html", code: indexHtml, language: "html", icon: <IconFileTypeHtml size={18} /> },
+        ]}
+      />
     </Tabs.Panel>
   )
 }
