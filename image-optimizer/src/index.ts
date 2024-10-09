@@ -1,25 +1,51 @@
-export const ERROR_MSG = "Invalid URL. Please, check the documentation."
+export const INVALID_URL = "Invalid URL. Please, check the documentation."
+export const DOMAIN_NOT_ALLOWED = "The image domain is not whitelisted."
 
 export default {
 	async fetch(req, env, ctx): Promise<Response> {
 		console.log(await env.DB.prepare("SELECT 1").all())
-		ctx.waitUntil(
-			// Logs, analytics, img size reduction, etc.
-
-			new Promise((resolve) => {
-				resolve(0)
-			})
-		)
 
 		const url = new URL(req.url)
 		const imageURL = getImageURL(url)
-		if (!imageURL) return new Response(ERROR_MSG, { status: 442 })
+		if (!imageURL) return new Response(INVALID_URL, { status: 442 })
+
+		const customerSlug = getCustomerSlug(url)
+		const customer = await env.DB.prepare("SELECT id, allowedDomains, remainingQuota FROM Customer WHERE slug = ?")
+			.bind(customerSlug)
+			.first<{ allowedDomains: string; quota: number; id: string }>()
+
+		if (!customer) {
+			return new Response(INVALID_URL, { status: 442 })
+		}
+		if (!isImgFromAllowedDomain(imageURL, customer.allowedDomains)) {
+			return new Response(DOMAIN_NOT_ALLOWED, { status: 403 })
+		}
 
 		const transformations = getTransformations(url, req.headers.get("Accept"))
 		const options = { cf: { image: transformations } }
 
 		const imageRequest = new Request(imageURL, { headers: req.headers })
-		return fetch(imageRequest, options)
+		const res = await fetch(imageRequest, options)
+
+		// Add logs, analytics, img size reduction, etc.
+
+		ctx.waitUntil(
+			new Promise(async (resolve) => {
+				// Nao deduzir quota se ja tiver transformado a imagem
+
+				await Promise.all([
+					env.DB.prepare("INSERT OR IGNORE INTO Transformation(customerId, pathname) VALUES(?, ?)")
+						.bind(customer.id, url.pathname)
+						.run(),
+					env.DB.prepare("UPDATE Customer SET remainingQuota = remainingQuota - 1 WHERE id = ?")
+						.bind(customer.id)
+						.run(),
+				])
+
+				resolve(null)
+			})
+		)
+		return res
 	},
 } satisfies ExportedHandler<Env>
 
@@ -47,4 +73,16 @@ export function getImageURL(url: URL) {
 	if (imageURL.startsWith("http")) return imageURL
 
 	return null
+}
+
+export function getCustomerSlug(url: URL) {
+	return url.hostname.split(".")[0]
+}
+
+export function isImgFromAllowedDomain(imageURL: string, allowedDomains?: string): boolean {
+	if (!allowedDomains) return false
+
+	const imgDomain = new URL(imageURL).hostname
+
+	return allowedDomains.includes(imgDomain)
 }
