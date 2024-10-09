@@ -1,43 +1,50 @@
+export const ERROR_MSG = "Invalid URL. Please, check the documentation."
+
 export default {
-	async fetch(request, env, ctx): Promise<Response> {
-		const url = new URL(request.url)
-		const parts = url.pathname.split("/")
-		const imageURL = parts.slice(2).join("/")
-		const { hostname, pathname } = new URL(imageURL)
+	async fetch(req, env, ctx): Promise<Response> {
+		console.log(await env.DB.prepare("SELECT 1").all())
+		ctx.waitUntil(
+			// Logs, analytics, img size reduction, etc.
 
-		if (!imageURL) {
-			return new Response("Malformed URL. Check the documentation", { status: 200 })
-		} else if (imageURL.includes("img.quickr.dev")) {
-			return new Response("Malformed URL. Check the documentation", { status: 200 })
-		}
+			new Promise((resolve) => {
+				resolve(0)
+			})
+		)
 
-		const opts = parts[1] === "" ? {} : formatOpts(parts[1])
+		const url = new URL(req.url)
+		const imageURL = getImageURL(url)
+		if (!imageURL) return new Response(ERROR_MSG, { status: 442 })
 
-		const options: any = {
-			cf: { image: opts },
-		}
+		const transformations = getTransformations(url, req.headers.get("Accept"))
+		const options = { cf: { image: transformations } }
 
-		const accept = request.headers.get("Accept")
-		if (!accept) {
-		} else if (/image\/avif/.test(accept)) {
-			options.cf.image.format = "avif"
-		} else if (/image\/webp/.test(accept)) {
-			options.cf.image.format = "webp"
-		}
-		const imageRequest = new Request(imageURL, {
-			headers: request.headers,
-		})
-
+		const imageRequest = new Request(imageURL, { headers: req.headers })
 		return fetch(imageRequest, options)
 	},
 } satisfies ExportedHandler<Env>
 
-function formatOpts(str: string) {
-	const obj = str.split(",").reduce<Record<string, string>>((acc, pair) => {
-		const [key, value] = pair.split("=").map((part) => decodeURIComponent(part).trim())
-		acc[key] = value
+export function getTransformations(url: URL, accept?: string | null) {
+	const [, transfString] = url.pathname.split("/")
 
+	const transf: RequestInitCfPropertiesImage = transfString.split(",").reduce<Record<string, string>>((acc, pair) => {
+		const [key, value] = pair.split("=").map((part) => decodeURIComponent(part).trim())
+		if (!key || !value) return acc
+
+		acc[key] = value
 		return acc
 	}, {})
-	return obj
+
+	if (accept?.includes("avif")) transf.format = "avif"
+	else if (accept?.includes("webp")) transf.format = "webp"
+
+	return transf
+}
+
+export function getImageURL(url: URL) {
+	const parts = url.pathname.split("/")
+	const imageURL = parts.slice(2).join("/")
+
+	if (imageURL.startsWith("http")) return imageURL
+
+	return null
 }

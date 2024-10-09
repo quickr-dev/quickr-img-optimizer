@@ -307,7 +307,7 @@ const VanillaTabPanel = () => {
 
   return (
     <Tabs.Panel value="vanilla">
-      <Text>Optimize images using data attributes</Text>
+      <Text>Optimize images using data attributes.</Text>
 
       <Text mt="md">Live demo and code:</Text>
       <List>
