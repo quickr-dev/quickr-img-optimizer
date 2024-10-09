@@ -17,6 +17,7 @@ export default {
 		if (!customer) {
 			return new Response(INVALID_URL, { status: 442 })
 		}
+
 		if (!isImgFromAllowedDomain(imageURL, customer.allowedDomains)) {
 			return new Response(DOMAIN_NOT_ALLOWED, { status: 403 })
 		}
