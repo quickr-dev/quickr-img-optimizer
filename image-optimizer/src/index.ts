@@ -16,7 +16,7 @@ export default {
 			.first<{ allowedDomains: string; quota: number; id: string }>()
 
 		if (!customer) {
-			return new Response(INVALID_CUSTOMER, { status: 442 })
+			return new Response(INVALID_CUSTOMER, { status: 404 })
 		}
 
 		if (!isImgFromAllowedDomain(imageURL, customer.allowedDomains)) {
