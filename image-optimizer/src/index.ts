@@ -34,7 +34,7 @@ export default {
 		ctx.waitUntil(
 			new Promise(async (resolve) => {
 				const existingTransformation = await env.DB.prepare(
-					"SELECT id FROM Transformation WHERE customerId = ? AND pathname = ?"
+					"SELECT id FROM Transformation WHERE customerId = ? AND pathname = ? AND billablePeriod = strftime('%Y-%m', 'now')"
 				)
 					.bind(customer.id, url.pathname)
 					.first<{ id: string }>()
