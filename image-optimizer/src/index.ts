@@ -1,4 +1,5 @@
 export const INVALID_URL = "Invalid URL. Please, check the documentation."
+export const INVALID_CUSTOMER = "Invalid subdomain. Please, check the documentation."
 export const DOMAIN_NOT_ALLOWED = "The image domain is not whitelisted."
 
 export default {
@@ -15,7 +16,7 @@ export default {
 			.first<{ allowedDomains: string; quota: number; id: string }>()
 
 		if (!customer) {
-			return new Response(INVALID_URL, { status: 442 })
+			return new Response(INVALID_CUSTOMER, { status: 442 })
 		}
 
 		if (!isImgFromAllowedDomain(imageURL, customer.allowedDomains)) {
