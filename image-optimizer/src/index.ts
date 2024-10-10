@@ -8,7 +8,7 @@ export default {
 
 		const url = new URL(req.url)
 		const imageURL = getImageURL(url)
-		if (!imageURL) return new Response(INVALID_URL, { status: 442 })
+		if (!imageURL) return new Response(INVALID_URL, { status: 400 })
 
 		const customerSlug = getCustomerSlug(url)
 		const customer = await env.DB.prepare("SELECT id, allowedDomains, remainingQuota FROM Customer WHERE slug = ?")
