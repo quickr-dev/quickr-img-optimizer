@@ -33,7 +33,15 @@ export default {
 
 		ctx.waitUntil(
 			new Promise(async (resolve) => {
-				// Nao deduzir quota se ja tiver transformado a imagem
+				const existingTransformation = await env.DB.prepare(
+					"SELECT id FROM Transformation WHERE customerId = ? AND pathname = ?"
+				)
+					.bind(customer.id, url.pathname)
+					.first<{ id: string }>()
+
+				if (existingTransformation) {
+					return resolve(null)
+				}
 
 				await Promise.all([
 					env.DB.prepare("INSERT OR IGNORE INTO Transformation(customerId, pathname) VALUES(?, ?)")
