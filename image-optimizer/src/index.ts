@@ -4,58 +4,54 @@ export const DOMAIN_NOT_ALLOWED = "The image domain is not whitelisted."
 
 export default {
 	async fetch(req, env, ctx): Promise<Response> {
-		console.log(await env.DB.prepare("SELECT 1").all())
-
 		const url = new URL(req.url)
 		const imageURL = getImageURL(url)
 		if (!imageURL) return new Response(INVALID_URL, { status: 400 })
 
 		const customerSlug = getCustomerSlug(url)
-		const customer = await env.DB.prepare("SELECT id, allowedDomains, remainingQuota FROM Customer WHERE slug = ?")
-			.bind(customerSlug)
-			.first<{ allowedDomains: string; quota: number; id: string }>()
 
-		if (!customer) {
-			return new Response(INVALID_CUSTOMER, { status: 404 })
-		}
+		if (customerSlug !== "quickr-cdn") {
+			const customer = await env.DB.prepare("SELECT id, allowedDomains, remainingQuota FROM Customer WHERE slug = ?")
+				.bind(customerSlug)
+				.first<{ allowedDomains: string; quota: number; id: string }>()
 
-		if (!isImgFromAllowedDomain(imageURL, customer.allowedDomains)) {
-			return new Response(DOMAIN_NOT_ALLOWED, { status: 403 })
-		}
+			if (!customer) {
+				return new Response(INVALID_CUSTOMER, { status: 404 })
+			}
 
-		const transformations = getTransformations(url, req.headers.get("Accept"))
-		const options = { cf: { image: transformations } }
+			if (!isImgFromAllowedDomain(imageURL, customer.allowedDomains)) {
+				return new Response(DOMAIN_NOT_ALLOWED, { status: 403 })
+			}
 
-		const imageRequest = new Request(imageURL, { headers: req.headers })
-		const res = await fetch(imageRequest, options)
-
-		// Add logs, analytics, img size reduction, etc.
-
-		ctx.waitUntil(
-			new Promise(async (resolve) => {
-				const existingTransformation = await env.DB.prepare(
-					"SELECT id FROM Transformation WHERE customerId = ? AND pathname = ? AND billablePeriod = strftime('%Y-%m', 'now')"
-				)
-					.bind(customer.id, url.pathname)
-					.first<{ id: string }>()
-
-				if (existingTransformation) {
-					return resolve(null)
-				}
-
-				await Promise.all([
-					env.DB.prepare("INSERT OR IGNORE INTO Transformation(customerId, pathname) VALUES(?, ?)")
+			ctx.waitUntil(
+				new Promise(async (resolve) => {
+					const existingTransformation = await env.DB.prepare(
+						"SELECT id FROM Transformation WHERE customerId = ? AND pathname = ? AND billablePeriod = strftime('%Y-%m', 'now')"
+					)
 						.bind(customer.id, url.pathname)
-						.run(),
-					env.DB.prepare("UPDATE Customer SET remainingQuota = remainingQuota - 1 WHERE id = ?")
-						.bind(customer.id)
-						.run(),
-				])
+						.first<{ id: string }>()
 
-				resolve(null)
-			})
-		)
-		return res
+					if (existingTransformation) {
+						return resolve(null)
+					}
+
+					await Promise.all([
+						env.DB.prepare("INSERT OR IGNORE INTO Transformation(customerId, pathname) VALUES(?, ?)")
+							.bind(customer.id, url.pathname)
+							.run(),
+						env.DB.prepare("UPDATE Customer SET remainingQuota = remainingQuota - 1 WHERE id = ?")
+							.bind(customer.id)
+							.run(),
+					])
+
+					resolve(null)
+				})
+			)
+		}
+
+		const options = { cf: { image: getTransformations(url, req.headers.get("Accept")) } }
+
+		return fetch(new Request(imageURL, { headers: req.headers }), options)
 	},
 } satisfies ExportedHandler<Env>
 
