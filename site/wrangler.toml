@@ -2,3 +2,14 @@
 name = "quickr"
 compatibility_date = "2024-10-04"
 pages_build_output_dir = "./build/client"
+
+[placement]
+mode = "smart"
+
+[observability]
+enabled = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "quickr"
+database_id = "40d7f4ec-ebb9-40dc-9251-5801307196a5"

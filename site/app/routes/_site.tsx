@@ -1,3 +1,4 @@
+import { SignedIn, SignedOut, UserButton } from "@clerk/remix"
 import { Box, Button, Card, Container, Divider, Flex } from "@mantine/core"
 import { Outlet } from "@remix-run/react"
 import { A } from "~/components/ui/A"
@@ -11,7 +12,7 @@ const Links = [
 export default function Layout() {
   return (
     <>
-      <Container component="header" mt="md">
+      <Container component="header" mt="md" mb={60}>
         <Flex align="center">
           <Box w="20vw">
             <A to="/" underline="never" c="black" fw={600} fz="lg">
@@ -32,19 +33,31 @@ export default function Layout() {
           </Flex>
 
           <Flex justify="end" align="center" gap="md" w="20vw">
-            <A to="/login" size="sm" fw={500}>
-              Log in
-            </A>
-            <Button size="sm">Sign up</Button>
+            <SignedIn>
+              <Button size="sm" component={A} to="/dashboard">
+                Dashboard
+              </Button>
+              <UserButton />
+            </SignedIn>
+            <SignedOut>
+              <A to="/sign-in" size="sm" fw={500}>
+                Log in
+              </A>
+              <Button size="sm" component={A} to="/sign-up">
+                Sign up
+              </Button>
+            </SignedOut>
           </Flex>
         </Flex>
       </Container>
 
-      <Outlet />
+      <Container component="main">
+        <Outlet />
+      </Container>
 
       <Divider mt={60} />
 
-      <Container size="md" component="footer" my="lg" ta="center">
+      <Container component="footer" my="lg" ta="center">
         <Flex gap="xl" justify="center">
           {Links.map((link) => (
             <A key={link.href} to={link.href} size="sm">

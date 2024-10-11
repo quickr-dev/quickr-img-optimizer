@@ -1,7 +1,9 @@
 import "@mantine/core/styles.css"
 
+import { ClerkApp } from "@clerk/remix"
+import { rootAuthLoader } from "@clerk/remix/ssr.server"
 import { ColorSchemeScript, createTheme, DEFAULT_THEME, MantineProvider } from "@mantine/core"
-import { LinksFunction } from "@remix-run/cloudflare"
+import { LinksFunction, LoaderFunction } from "@remix-run/cloudflare"
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "@remix-run/react"
 
 export const links: LinksFunction = () => [
@@ -12,6 +14,8 @@ export const links: LinksFunction = () => [
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
 ]
+
+export const loader: LoaderFunction = rootAuthLoader
 
 const theme = createTheme({
   breakpoints: {
@@ -59,6 +63,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
   )
 }
 
-export default function App() {
+function App() {
   return <Outlet />
 }
+
+export default ClerkApp(App, {
+  signInUrl: "/sign-in",
+  signUpUrl: "/sign-up",
+  signInFallbackRedirectUrl: "/dashboard",
+  signUpFallbackRedirectUrl: "/dashboard",
+})

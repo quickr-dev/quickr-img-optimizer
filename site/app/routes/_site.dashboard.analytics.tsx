@@ -1,13 +1,13 @@
 import type { MetaFunction } from "@remix-run/cloudflare"
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Quickr" }, { name: "description", content: "Dev tools" }]
+  return [{ title: "Analytics | Quickr" }]
 }
 
 export default function Page() {
   return (
     <>
-      <div>Dashboard</div>
+      <div>Analytics</div>
     </>
   )
 }

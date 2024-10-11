@@ -16,6 +16,7 @@
     "typegen": "wrangler types"
   },
   "dependencies": {
+    "@clerk/remix": "4.2.36",
     "@mantine/code-highlight": "7.13.2",
     "@mantine/core": "7.13.2",
     "@mantine/hooks": "7.13.2",
