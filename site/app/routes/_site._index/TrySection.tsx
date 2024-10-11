@@ -88,7 +88,7 @@ export const TrySection = () => {
           <ImageExample
             label="Optimized"
             imageUrl={imageUrl}
-            optimize={`https://img.quickr.dev/width=${width},quality=${quality},blur=${blur}/${imageUrl}`}
+            optimize={`https://quickr-cdn.quickr.dev/width=${width},quality=${quality},blur=${blur}/${imageUrl}`}
           />
         </Flex>
       </Container>
@@ -122,12 +122,13 @@ const ImageExample = ({
         if (!res.ok) {
           throw new Error("Network response was not ok")
         }
+
         const contentType = res.headers.get("content-type")
-        console.log(">>>", contentType)
         if (!contentType?.startsWith("image")) {
           setError(`That URL doens't seem to be of an image, got content-type ${contentType}`)
           return
         }
+
         const contentLength = res.headers.get("content-length")
         if (contentLength) {
           const sizeInKB = (parseInt(contentLength!, 10) / 1024).toFixed(2)

@@ -63,21 +63,21 @@ const IntroTabPanel = () => {
   return (
     <Tabs.Panel value="intro">
       <Text>
-        Simply load images via <Code>https://img.quickr.dev/TRANSFORMATIONS/IMAGE_URL</Code>
+        Simply load images via <Code>https://quickr-cdn.quickr.dev/TRANSFORMATIONS/IMAGE_URL</Code>
       </Text>
 
       <Text mt="lg" fw={500}>
         Without transformations
       </Text>
       <Code>
-        https://img.quickr.dev//<Code c="blue">IMAGE_URL</Code>
+        https://quickr-cdn.quickr.dev//<Code c="blue">IMAGE_URL</Code>
       </Code>
 
       <Text fw={500} mt="md">
         With transformations
       </Text>
       <Code>
-        https://img.quickr.dev/<Code c="green">width=400</Code>/
+        https://quickr-cdn.quickr.dev/<Code c="green">width=400</Code>/
         <Code c="blue">https://example.com/image.png</Code>
       </Code>
 
@@ -127,7 +127,7 @@ export default function loader({ src, width, quality }) {
 
 function optimizedSrc(src, width, quality) {
   const params = [\`width=\${width}\`, \`quality=\${quality || 75}\`]
-  return \`https://img.quickr.dev/\${params.join(",")}/\${src}\`
+  return \`https://quickr-cdn.quickr.dev/\${params.join(",")}/\${src}\`
 }`
 
   const nextConfigMjs = `
@@ -241,7 +241,7 @@ const VanillaTabPanel = () => {
 
 
   function optimizedSrc(src, transformationsObject) {
-    return \`https://img.quickr.dev/\${transformationsAsString(transformationsObject)}/\${src}\`
+    return \`https://quickr-cdn.quickr.dev/\${transformationsAsString(transformationsObject)}/\${src}\`
   }
 
   function optimizedSrcSet(src, transformationsObject) {
@@ -342,7 +342,7 @@ const ImageWithTransformations = ({ src }: { src: string }) => {
       <Center h={281}>
         <Card p={0} withBorder bg="gray.0">
           <img
-            src={`https://img.quickr.dev/width=${width},quality=${quality},blur=${blur}/${src}`}
+            src={`https://quickr-cdn.quickr.dev/width=${width},quality=${quality},blur=${blur}/${src}`}
             alt="transformed image"
             style={{ objectFit: "contain", maxWidth: "100%" }}
           />
@@ -350,7 +350,7 @@ const ImageWithTransformations = ({ src }: { src: string }) => {
       </Center>
 
       <Code block mt="md">
-        {`<img src="https://img.quickr.dev/width=${width},quality=${quality},blur=${blur}/${src}" />`}
+        {`<img src="https://quickr-cdn.quickr.dev/width=${width},quality=${quality},blur=${blur}/${src}" />`}
       </Code>
 
       <Flex flex="1" direction="column" gap="xl" mt="xl" ta="left">

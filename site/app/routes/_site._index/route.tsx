@@ -69,7 +69,7 @@ export default function Index() {
             <Text fw={500} ta="center" fz="lg" mb="xs">
               Optimized
             </Text>
-            <Code mb="xs">{'<img src="https://img.quickr.dev/width=500/img.jpg" />'}</Code>
+            <Code mb="xs">{'<img src="https://quickr-cdn.quickr.dev/width=500/img.jpg" />'}</Code>
             <Progress.Root size="xl" mb="md" w="100%" maw={400}>
               <Progress.Section value={2}></Progress.Section>
               <Progress.Section value={98} color="none">
@@ -77,7 +77,7 @@ export default function Index() {
               </Progress.Section>
             </Progress.Root>
             <img
-              src={`https://img.quickr.dev/width=500/https://assets.quickr.dev/example.jpeg`}
+              src={`https://quickr-cdn.quickr.dev/width=500/https://assets.quickr.dev/example.jpeg`}
               width={400}
               height={400}
               style={{ objectFit: "cover" }}

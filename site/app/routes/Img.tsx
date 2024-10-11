@@ -47,7 +47,7 @@ const imgUrl = (src: string, opts: Rec, replacements: Rec) => {
     src = window.location.hostname + src
   }
 
-  return `https://img.quickr.dev/${optsStr}/${src}`
+  return `https://quickr-cdn.quickr.dev/${optsStr}/${src}`
 }
 
 const isLocalhost = (src: string) => {
