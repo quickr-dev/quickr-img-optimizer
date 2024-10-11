@@ -1,7 +1,7 @@
 #:schema node_modules/wrangler/config-schema.json
 name = "image-optimizer"
 main = "src/index.ts"
-compatibility_date = "2024-09-23"
+compatibility_date = "2024-10-04"
 compatibility_flags = ["nodejs_compat"]
 workers_dev = false
 route = { pattern = "*-cdn.quickr.dev/*", zone_name = "quickr.dev" }
