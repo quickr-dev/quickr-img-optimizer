@@ -32,7 +32,9 @@ CREATE TABLE Transformation (
 );
 
 CREATE UNIQUE INDEX idxCustomerUserId ON Customer (userId);
+
 CREATE INDEX idxSubdomainCustomerId ON Subdomain (customerId);
 CREATE UNIQUE INDEX idxSubdomainSlug ON Subdomain (slug);
+
 CREATE INDEX idxTransformationSubdomainId ON Transformation (subdomainId);
 CREATE INDEX idxTransformationPathname ON Transformation (pathname);

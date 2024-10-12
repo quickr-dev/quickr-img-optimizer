@@ -18,7 +18,6 @@ interface Subdomain {
   id: number
   customerId: string
   slug: string
-  subdomain: string
   imageDomains: string
   createdAt: number
 }

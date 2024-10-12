@@ -16,10 +16,11 @@ import {
   Title,
 } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
-import type { ActionFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare"
-import { Form, json, useLoaderData } from "@remix-run/react"
+import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare"
+import { Form, json, redirect, useLoaderData } from "@remix-run/react"
 import { IconDots, IconPlus, IconTrash } from "@tabler/icons-react"
 import { useState } from "react"
+import { getCustomer } from "~/db/getCustomer"
 
 export const meta: MetaFunction = () => {
   return [{ title: "Dashboard | Quickr" }]
@@ -40,12 +41,17 @@ export const loader = async (args: LoaderFunctionArgs) => {
   return json({ subdomains: subdomains.results })
 }
 
-export const action: ActionFunction = async ({ request }) => {
-  const formData = await request.formData()
-  const updates = Object.fromEntries(formData)
-  console.log("updates", updates)
+export const action = async (args: ActionFunctionArgs) => {
+  const { userId } = await getAuth(args)
+  const formData = await args.request.formData()
 
-  return "json({})"
+  const { DB } = args.context.cloudflare.env
+  const customer = await getCustomer(DB, userId!)
+  await DB.prepare(`INSERT OR IGNORE INTO Subdomain(customerId, slug, imageDomains) VALUES (?, ?, ?)`)
+    .bind(customer.id, formData.get("subdomain"), formData.get("imageDomains"))
+    .run()
+
+  return redirect("/dashboard")
 }
 
 const EmptyTable = ({ title, subtitle }: { title: string; subtitle: string }) => (
@@ -84,7 +90,7 @@ export default function Page() {
           <Table.Tbody>
             {subdomains.map((subdomain) => (
               <Table.Tr key={subdomain.id}>
-                <Table.Td>{subdomain.subdomain}</Table.Td>
+                <Table.Td>{subdomain.slug}</Table.Td>
                 <Table.Td>{subdomain.imageDomains}</Table.Td>
                 <Table.Td>
                   <Menu>
