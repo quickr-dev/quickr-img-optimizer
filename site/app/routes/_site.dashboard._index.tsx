@@ -5,6 +5,7 @@ import {
   Card,
   Container,
   Flex,
+  Group,
   Menu,
   Modal,
   Stack,
@@ -171,9 +172,12 @@ your-domain.com"
               autosize
             />
 
-            <Flex>
+            <Group gap="sm">
               <Button type="submit">Save</Button>
-            </Flex>
+              <Button variant="subtle" onClick={close}>
+                Cancel
+              </Button>
+            </Group>
           </Stack>
         </Form>
       </Modal>
