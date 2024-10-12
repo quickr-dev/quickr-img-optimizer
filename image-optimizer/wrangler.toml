@@ -15,4 +15,5 @@ enabled = true
 [[d1_databases]]
 binding = "DB"
 database_name = "quickr"
-database_id = "40d7f4ec-ebb9-40dc-9251-5801307196a5"
+database_id = "8f92c3b1-e510-4617-b804-449494bc432d"
+preview_database_id = "quickr_dev"

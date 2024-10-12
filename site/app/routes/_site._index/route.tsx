@@ -22,8 +22,8 @@ export default function Index() {
         </Text>
 
         <Flex mt={"xl"} gap="lg" justify="center">
-          <Button>Start for free</Button>
-          <Button variant="outline" component={A} to="/docs">
+          <Button radius="xl">Start for free</Button>
+          <Button radius="xl" variant="outline" component={A} to="/docs">
             How it works
           </Button>
         </Flex>

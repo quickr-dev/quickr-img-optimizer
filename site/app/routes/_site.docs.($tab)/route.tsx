@@ -15,45 +15,43 @@ export default function Index() {
   const { tab } = useParams()
 
   return (
-    <Container>
-      <Tabs
-        orientation="vertical"
-        variant="pills"
-        defaultValue="intro"
-        mih="60vh"
-        value={tab}
-        onChange={(value) => navigate(`/docs/${value}`)}
-      >
-        <Tabs.List mr={60}>
-          <Tabs.Tab py="sm" value="intro">
-            Introduction
-          </Tabs.Tab>
-          <Tabs.Tab py="sm" value="transformations">
-            Transformations
-          </Tabs.Tab>
-          <Text fw={600} fz="sm" c="gray.9" mt="md" ml="md">
-            Quickstart
-          </Text>
-          <Tabs.Tab py="sm" value="next-image">
-            next/image
-          </Tabs.Tab>
-          <Tabs.Tab py="sm" value="react">
-            React component
-          </Tabs.Tab>
-          <Tabs.Tab py="sm" value="vanilla">
-            Vanilla JS
-          </Tabs.Tab>
-        </Tabs.List>
+    <Tabs
+      orientation="vertical"
+      variant="pills"
+      defaultValue="intro"
+      mih="60vh"
+      value={tab}
+      onChange={(value) => navigate(`/docs/${value}`)}
+    >
+      <Tabs.List mr={60} w={200}>
+        <Tabs.Tab py="md" px="lg" value="intro">
+          Introduction
+        </Tabs.Tab>
+        <Tabs.Tab py="md" px="lg" value="transformations">
+          Transformations
+        </Tabs.Tab>
+        <Text fw={600} fz="sm" c="gray.9" mt="md" ml="md">
+          Quickstart
+        </Text>
+        <Tabs.Tab py="md" px="lg" value="next-image">
+          next/image
+        </Tabs.Tab>
+        <Tabs.Tab py="md" px="lg" value="react">
+          React component
+        </Tabs.Tab>
+        <Tabs.Tab py="md" px="lg" value="vanilla">
+          Vanilla JS
+        </Tabs.Tab>
+      </Tabs.List>
 
-        <Container size="sm" ml={0}>
-          <IntroTabPanel />
-          <TransformationsTabPanel />
-          <NextImageTabPanel />
-          <ReactTabPanel />
-          <VanillaTabPanel />
-        </Container>
-      </Tabs>
-    </Container>
+      <Container size="sm" ml={0}>
+        <IntroTabPanel />
+        <TransformationsTabPanel />
+        <NextImageTabPanel />
+        <ReactTabPanel />
+        <VanillaTabPanel />
+      </Container>
+    </Tabs>
   )
 }
 

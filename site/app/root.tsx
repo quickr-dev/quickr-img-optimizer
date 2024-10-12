@@ -1,10 +1,22 @@
 import "@mantine/core/styles.css"
+import "@mantine/nprogress/styles.css"
 
 import { ClerkApp } from "@clerk/remix"
 import { rootAuthLoader } from "@clerk/remix/ssr.server"
-import { ColorSchemeScript, createTheme, DEFAULT_THEME, MantineProvider } from "@mantine/core"
+import {
+  ColorSchemeScript,
+  createTheme,
+  DEFAULT_THEME,
+  MantineProvider,
+  Modal,
+  TableTd,
+  TableTh,
+} from "@mantine/core"
+import { usePrevious } from "@mantine/hooks"
+import { NavigationProgress, nprogress } from "@mantine/nprogress"
 import { LinksFunction, LoaderFunction } from "@remix-run/cloudflare"
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "@remix-run/react"
+import { Links, Meta, Outlet, Scripts, ScrollRestoration, useNavigation } from "@remix-run/react"
+import { useEffect, useState } from "react"
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -15,6 +27,8 @@ export const links: LinksFunction = () => [
   },
 ]
 
+// TODO: create Customer after signup
+// redirect URL pode ser pra uma rota que checa/cria o Customer depois redirect pro dashbaord
 export const loader: LoaderFunction = rootAuthLoader
 
 const theme = createTheme({
@@ -37,14 +51,35 @@ const theme = createTheme({
   headings: {
     fontFamily: `Inter, ${DEFAULT_THEME.fontFamily}`,
   },
-  defaultRadius: "xl",
+  defaultRadius: "md",
   primaryColor: "gray",
   primaryShade: 9,
+  components: {
+    Modal: Modal.extend({
+      defaultProps: {
+        padding: "xl",
+      },
+    }),
+    TableTh: TableTh.extend({
+      defaultProps: {
+        px: "md",
+        bg: "gray.1",
+        fw: 600,
+        fz: "xs",
+        c: "gray.7",
+      },
+    }),
+    TableTd: TableTd.extend({
+      defaultProps: {
+        p: "md",
+      },
+    }),
+  },
 })
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning={true}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -54,7 +89,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
 
       <body>
-        <MantineProvider theme={theme}>{children}</MantineProvider>
+        <MantineProvider theme={theme}>
+          <Progress />
+
+          {children}
+        </MantineProvider>
 
         <ScrollRestoration />
         <Scripts />
@@ -73,3 +112,26 @@ export default ClerkApp(App, {
   signInFallbackRedirectUrl: "/dashboard",
   signUpFallbackRedirectUrl: "/dashboard",
 })
+
+const Progress = () => {
+  const navigation = useNavigation()
+  const prevState = usePrevious(navigation.state)
+  const [timeout, setTimeoutVar] = useState<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    if (prevState === "idle" && navigation.state !== "idle") {
+      setTimeoutVar(
+        setTimeout(() => {
+          nprogress.start()
+        }, 800)
+      )
+    } else if (prevState !== "idle" && navigation.state === "idle") {
+      if (timeout) {
+        nprogress.complete()
+        clearTimeout(timeout)
+      }
+    }
+  }, [navigation.state])
+
+  return <NavigationProgress />
+}

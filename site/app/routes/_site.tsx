@@ -21,7 +21,7 @@ export default function Layout() {
           </Box>
 
           <Flex w="60vw" justify="center">
-            <Card component="nav" w="fit-content" px="xl" withBorder shadow="xs" p={0}>
+            <Card component="nav" w="fit-content" px="xl" withBorder shadow="xs" radius="xl" p={0}>
               <Flex py="sm" align="center" justify="center" gap="xl">
                 {Links.map((link) => (
                   <A key={link.href} to={link.href} size="sm">
@@ -34,7 +34,7 @@ export default function Layout() {
 
           <Flex justify="end" align="center" gap="md" w="20vw">
             <SignedIn>
-              <Button size="sm" component={A} to="/dashboard">
+              <Button radius="xl" size="sm" component={A} to="/dashboard">
                 Dashboard
               </Button>
               <UserButton />
@@ -43,7 +43,7 @@ export default function Layout() {
               <A to="/sign-in" size="sm" fw={500}>
                 Log in
               </A>
-              <Button size="sm" component={A} to="/sign-up">
+              <Button radius="xl" size="sm" component={A} to="/sign-up">
                 Sign up
               </Button>
             </SignedOut>
@@ -51,7 +51,7 @@ export default function Layout() {
         </Flex>
       </Container>
 
-      <Container component="main">
+      <Container component="main" mih={"60vh"}>
         <Outlet />
       </Container>
 
