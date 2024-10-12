@@ -12,6 +12,6 @@ enabled = true
 [[d1_databases]]
 binding = "DB"
 database_name = "quickr"
-database_id = "8f92c3b1-e510-4617-b804-449494bc432d"
+database_id = "5dd2d7c2-adf8-4b2f-8a92-bc2389db5bb6"
 preview_database_id = "quickr_dev"
 migrations_dir = "../image-optimizer/migrations"

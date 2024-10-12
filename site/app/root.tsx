@@ -27,8 +27,6 @@ export const links: LinksFunction = () => [
   },
 ]
 
-// TODO: create Customer after signup
-// redirect URL pode ser pra uma rota que checa/cria o Customer depois redirect pro dashbaord
 export const loader: LoaderFunction = rootAuthLoader
 
 const theme = createTheme({
@@ -110,7 +108,7 @@ export default ClerkApp(App, {
   signInUrl: "/sign-in",
   signUpUrl: "/sign-up",
   signInFallbackRedirectUrl: "/dashboard",
-  signUpFallbackRedirectUrl: "/dashboard",
+  signUpFallbackRedirectUrl: "/sign-up-success",
 })
 
 const Progress = () => {

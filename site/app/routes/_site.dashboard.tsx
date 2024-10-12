@@ -1,22 +1,26 @@
+import { SignedIn, SignedOut } from "@clerk/remix"
 import { getAuth } from "@clerk/remix/ssr.server"
-import { LoaderFunction } from "@remix-run/cloudflare"
-import { Outlet, redirect, useLocation, useNavigate } from "@remix-run/react"
+import { Text } from "@mantine/core"
+import { LoaderFunction, redirect } from "@remix-run/cloudflare"
+import { Outlet } from "@remix-run/react"
 
 export const loader: LoaderFunction = async (args) => {
   const { userId } = await getAuth(args)
 
   if (!userId) return redirect("/sign-in")
 
-  return { yourData: "here" }
+  return null
 }
 
 export default function Layout() {
-  const navigate = useNavigate()
-  const { pathname } = useLocation()
-
   return (
     <>
-      <Outlet />
+      <SignedIn>
+        <Outlet />
+      </SignedIn>
+      <SignedOut>
+        <Text>You are signed out</Text>
+      </SignedOut>
     </>
   )
 }

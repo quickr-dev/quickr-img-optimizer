@@ -3,9 +3,16 @@
 CREATE TABLE Customer (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   userId TEXT NOT NULL,
-  remainingFreeQuota INT NOT NULL default 999,
-  plan TEXT NOT NULL default('free'), -- 'free', 'pay-as-you-go'
-  planStartDate TEXT NOT NULL default (strftime('%Y-%m-%d', 'now')),
+  planId TEXT NOT NULL,
+  createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Invoice (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  customerId TEXT NOT NULL,
+  referenceMonth TEXT NOT NULL,
+  numberOfTransformations INT NOT NULL,
+  numberOfBillableTransformations INT NOT NULL,
   createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -24,7 +31,7 @@ CREATE TABLE Transformation (
   createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idxCustomerUserId ON Customer (userId);
+CREATE UNIQUE INDEX idxCustomerUserId ON Customer (userId);
 CREATE INDEX idxSubdomainCustomerId ON Subdomain (customerId);
 CREATE UNIQUE INDEX idxSubdomainSlug ON Subdomain (slug);
 CREATE INDEX idxTransformationSubdomainId ON Transformation (subdomainId);

@@ -21,31 +21,6 @@ import { Form, json, useLoaderData } from "@remix-run/react"
 import { IconDots, IconPlus, IconTrash } from "@tabler/icons-react"
 import { useState } from "react"
 
-type Customer = {
-  id: number
-  userId: string
-  remainingFreeQuota: number
-  plan: string
-  planStartDate: string
-  createdAt: number
-}
-
-type Transformation = {
-  id: number
-  subdomainId: number
-  pathname: string
-  createdAt: number
-}
-
-type Subdomain = {
-  id: number
-  customerId: string
-  slug: string
-  subdomain: string
-  imageDomains: string
-  createdAt: number
-}
-
 export const meta: MetaFunction = () => {
   return [{ title: "Dashboard | Quickr" }]
 }
