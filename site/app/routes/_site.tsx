@@ -52,7 +52,7 @@ export default function Layout() {
         </Flex>
       </Container>
 
-      <Container component="main" mih={"60vh"}>
+      <Container component="main" mih={"72vh"}>
         <Outlet />
       </Container>
 
