@@ -2,9 +2,10 @@ import { SignUp } from "@clerk/remix"
 import { getAuth } from "@clerk/remix/ssr.server"
 import { Stack } from "@mantine/core"
 import { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare"
+import { pageTitle } from "~/lib/pageTitle"
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Sign Up | Quickr" }]
+  return [pageTitle("Sign up")]
 }
 
 export const loader = async (args: LoaderFunctionArgs) => {

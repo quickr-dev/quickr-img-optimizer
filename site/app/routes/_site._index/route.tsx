@@ -1,10 +1,11 @@
 import { Box, Button, Code, Flex, Progress, SimpleGrid, Space, Text, Title } from "@mantine/core"
 import { MetaFunction } from "@remix-run/cloudflare"
 import { A } from "~/components/ui/A"
+import { pageTitle } from "~/lib/pageTitle"
 import { TrySection } from "./TrySection"
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Quickr" }]
+  return [pageTitle(false)]
 }
 
 export default function Index() {

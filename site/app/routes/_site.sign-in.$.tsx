@@ -1,10 +1,12 @@
 import { SignIn } from "@clerk/remix"
 import { Stack } from "@mantine/core"
 import { MetaFunction } from "@remix-run/cloudflare"
+import { pageTitle } from "~/lib/pageTitle"
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Sign In | Quickr" }]
+  return [pageTitle("Sign in")]
 }
+
 export default function Page() {
   return (
     <Stack align={"center"} justify={"center"}>

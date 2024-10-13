@@ -4,9 +4,10 @@ import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare"
 import { json, useLoaderData } from "@remix-run/react"
 import { IconDots, IconPlus, IconTrash } from "@tabler/icons-react"
 import { A } from "~/components/ui/A"
+import { pageTitle } from "~/lib/pageTitle"
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Dashboard | Quickr" }]
+  return [pageTitle("Dashboard")]
 }
 
 export const loader = async (args: LoaderFunctionArgs) => {

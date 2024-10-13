@@ -16,9 +16,10 @@ import { Form, json, redirect, useActionData, useNavigation } from "@remix-run/r
 import { useState } from "react"
 import { A } from "~/components/ui/A"
 import { getCustomer } from "~/db/getCustomer"
+import { pageTitle } from "~/lib/pageTitle"
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Add Subdomain | Quickr" }]
+  return [pageTitle("Add Subdomain")]
 }
 
 export const action = async (args: ActionFunctionArgs) => {

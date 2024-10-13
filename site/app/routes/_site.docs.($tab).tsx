@@ -5,9 +5,10 @@ import { useState } from "react"
 import { CodeHighlightTabs } from "@mantine/code-highlight"
 import "@mantine/code-highlight/styles.css"
 import { IconBrandTypescript, IconFileTypeHtml } from "@tabler/icons-react"
+import { pageTitle } from "~/lib/pageTitle"
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Docs | Quickr" }]
+  return [pageTitle("Docs")]
 }
 
 export default function Index() {
