@@ -1,5 +1,5 @@
 import { SignedIn, SignedOut, UserButton } from "@clerk/remix"
-import { Box, Button, Card, Container, Divider, Flex } from "@mantine/core"
+import { Box, Button, Card, Container, Divider, Flex, SimpleGrid } from "@mantine/core"
 import { Outlet } from "@remix-run/react"
 import { A } from "~/components/ui/A"
 
@@ -14,14 +14,14 @@ export default function Layout() {
   return (
     <>
       <Container component="header" mt="md" mb={60}>
-        <Flex align="center">
-          <Box w="20vw">
+        <SimpleGrid cols={{ xs: 1, md: 3 }}>
+          <Flex align="center" gap="md">
             <A to="/" underline="never" c="black" fw={600} fz="xl">
               Quickr
             </A>
-          </Box>
+          </Flex>
 
-          <Flex w="60vw" justify="center">
+          <Flex justify="center">
             <Card component="nav" w="fit-content" px="xl" withBorder shadow="xs" radius="xl" p={0}>
               <Flex py="sm" align="center" justify="center" gap="xl">
                 {Links.map((link) => (
@@ -33,7 +33,7 @@ export default function Layout() {
             </Card>
           </Flex>
 
-          <Flex justify="end" align="center" gap="md" w="20vw">
+          <Flex justify="end" align="center" gap="md">
             <SignedIn>
               <Button radius="xl" size="sm" component={A} to="/dashboard">
                 Dashboard
@@ -49,6 +49,22 @@ export default function Layout() {
               </Button>
             </SignedOut>
           </Flex>
+        </SimpleGrid>
+
+        <Flex align="center" gap="sm" w={"fit-content"} mx="auto" mt="lg" fz="sm" c="gray.7">
+          Want to use quickr on your project?
+          <Button
+            component={A}
+            to="mailto:hello@quickr.dev"
+            size="compact-xs"
+            radius="xl"
+            style={{
+              background:
+                "linear-gradient(45deg, var(--mantine-color-violet-9) 50%, var(--mantine-color-violet-3) 100%)",
+            }}
+          >
+            Reach out
+          </Button>
         </Flex>
       </Container>
 
