@@ -1,6 +1,6 @@
-export const INVALID_URL = "Subdomain not found"
-export const SUBDOMAIN_NOT_FOUND = "Invalid subdomain. Please, check the documentation."
-export const DOMAIN_NOT_ALLOWED = "The image domain is not whitelisted."
+const INVALID_URL = "Invalid URL, please check the documentation at https://quickr.dev/docs"
+const SUBDOMAIN_NOT_FOUND = "Subdomain not found"
+const DOMAIN_NOT_ALLOWED = "The image domain is not whitelisted"
 
 export default {
 	async fetch(req, env, ctx): Promise<Response> {

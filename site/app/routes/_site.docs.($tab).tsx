@@ -151,6 +151,7 @@ export default function Page() {
     </div>
   );
 }`
+
   return (
     <Tabs.Panel value="next-image">
       <Text>Use the loader prop of loader file to update the URL.</Text>
@@ -170,13 +171,11 @@ export default function Page() {
       <Text mt="md">Live demo and code:</Text>
       <List>
         <ListItem>
-          <a href="https://nextjs-image-loader-example.vercel.app/">
-            https://nextjs-image-loader-example.vercel.app/
-          </a>
+          <a href="https://quickr-nextjs.pages.dev">https://quickr-nextjs.pages.dev</a>
         </ListItem>
         <ListItem>
-          <a href="https://github.com/rafbgarcia/nextjs-image-loader-example">
-            https://github.com/rafbgarcia/nextjs-image-loader-example
+          <a href="https://github.com/quickr-dev/quickr-nextjs">
+            https://github.com/quickr-dev/quickr-nextjs
           </a>
         </ListItem>
       </List>
@@ -309,7 +308,7 @@ const VanillaTabPanel = () => {
       <Text mt="md">Live demo and code:</Text>
       <List>
         <ListItem>
-          <a href="https://quickr-vanilla-js.vercel.app/">https://quickr-vanilla-js.vercel.app/</a>
+          <a href="https://vanilla-example.pages.dev">https://vanilla-example.pages.dev</a>
         </ListItem>
         <ListItem>
           <a href="https://github.com/rafbgarcia/vanilla-example">
