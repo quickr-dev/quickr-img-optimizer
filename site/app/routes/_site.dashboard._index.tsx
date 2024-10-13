@@ -1,5 +1,5 @@
 import { getAuth } from "@clerk/remix/ssr.server"
-import { ActionIcon, Button, Card, Container, Flex, Menu, Stack, Table, Text, Title } from "@mantine/core"
+import { ActionIcon, Button, Card, Flex, Menu, Stack, Table, Text, Title } from "@mantine/core"
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare"
 import { Form, json, useLoaderData } from "@remix-run/react"
 import { IconDots, IconPlus, IconTrash } from "@tabler/icons-react"
@@ -39,7 +39,7 @@ export default function Page() {
   const { subdomains } = useLoaderData<typeof loader>()
 
   return (
-    <Container size="md">
+    <>
       <Flex align="center" gap="md" mb="xl">
         <Title order={2}>Subdomains</Title>
 
@@ -103,6 +103,6 @@ export default function Page() {
           </Table.Tbody>
         </Table>
       )}
-    </Container>
+    </>
   )
 }
