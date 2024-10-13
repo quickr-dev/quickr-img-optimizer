@@ -38,9 +38,9 @@ export default function Index() {
         <Tabs.Tab py="md" px="lg" value="next-image">
           next/image
         </Tabs.Tab>
-        <Tabs.Tab py="md" px="lg" value="react">
+        {/* <Tabs.Tab py="md" px="lg" value="react">
           React component
-        </Tabs.Tab>
+        </Tabs.Tab> */}
         <Tabs.Tab py="md" px="lg" value="vanilla">
           Vanilla JS
         </Tabs.Tab>
@@ -146,17 +146,19 @@ export default nextConfig;`
 
   const pageTsx = `
 import Image from "next/image";
-import Next from "./next.svg"
+import ExampleImg from "./image.jpeg";
 
 export default function Page() {
   return (
-    <div>
-      <Image src="https://nextjs.org/icons/next.svg" alt="Next.js logo" width={180} height={38} />
-
-      <Image src={Next} alt="Next" width={180} />
-    </div>
+    <>
+      <Image src="https://assets.quickr.dev/example2.jpeg" width={180} height={200} alt="Image loaded via URL"  />
+      <br />
+      <br />
+      <Image src={ExampleImg} alt="Image loaded via import" width={400} />
+    </>
   );
-}`
+}
+`
 
   return (
     <Tabs.Panel value="next-image">
@@ -186,10 +188,10 @@ export default function Page() {
         mt="xl"
         code={[
           {
-            fileName: "imageLoader.js",
-            code: imageLoaderJS,
-            language: "js",
-            icon: <IconBrandJavascript size={18} />,
+            fileName: "app/page.tsx",
+            code: pageTsx,
+            language: "tsx",
+            icon: <IconBrandTypescript size={18} />,
           },
           {
             fileName: "next.config.mjs",
@@ -198,10 +200,10 @@ export default function Page() {
             icon: <IconBrandJavascript size={18} />,
           },
           {
-            fileName: "app/page.tsx",
-            code: pageTsx,
-            language: "tsx",
-            icon: <IconBrandTypescript size={18} />,
+            fileName: "imageLoader.js",
+            code: imageLoaderJS,
+            language: "js",
+            icon: <IconBrandJavascript size={18} />,
           },
         ]}
       />
@@ -219,58 +221,63 @@ const ReactTabPanel = () => {
 
 const VanillaTabPanel = () => {
   const scriptJs = `
-;(() => {
-  // Update variables below as necessary
-  const PROD_HOSTNAME = 'YOUR_PRODUCTION_HOSTNAME';
-  const optimizeOnlyInProduction = true;
+(() => {
+  const productionUrl = "https://vanilla-js.quickr.dev"; // Replace with your domain
+  const quickrUrl = "https://quickr-cdn.quickr.dev"; // "quickr-cdn" is available to use during beta
 
-  const origin = new URL(location.href).origin;
-  const isProduction = origin.includes(PROD_HOSTNAME) || !origin.includes('localhost') && !origin.includes('127.0.0.1');
+  document.querySelectorAll("img[data-src]").forEach((img) => {
+    const { src } = img.dataset;
+    const transformationsObject = transformationsAsObject(img);
 
-  document.querySelectorAll('img[data-src]').forEach((img) => {
-    const { width, height } = img;
-    const { src, transformations = "" } = img.dataset;
-    const transformationsObject = transformationsAsObject(transformations);
-    transformationsObject.width ||= width === 0 ? undefined : width;
-    transformationsObject.height ||= height === 0 ? undefined : height;
+    img.loading = "lazy";
+    img.decoding = "async";
 
-    img.loading = 'lazy';
-    img.decoding = 'async';
-
-    if (optimizeOnlyInProduction && !isProduction) {
-      img.src = img.dataset.src;
-    } else if (src.startsWith('http')) {
-      img.src = optimizedSrc(src, transformationsObject);
-      img.srcset = optimizedSrcSet(src, transformationsObject);
-    } else if (isProduction) {
-      // 'src' is A relative path, e.g. "/images/example.jpg"
-      img.src = optimizedSrc(\`\${origin}\${src}\`, transformationsObject);
-      img.srcset = optimizedSrcSet(src, transformationsObject);
+    if (!shouldOptimize()) {
+      img.src = src;
+    } else if (src.startsWith("http")) {
+      img.src = getSrc(src, transformationsObject);
+      img.srcset = getSrcSet(src, transformationsObject);
     } else {
-      img.src = img.dataset.src;
+      const absoluteSrc =
+        productionUrl + (src.startsWith("/") ? src : \`/\${src}\`);
+
+      img.src = getSrc(absoluteSrc, transformationsObject);
+      img.srcset = getSrcSet(absoluteSrc, transformationsObject);
     }
   });
 
+  function shouldOptimize() {
+    const isProduction = location.href.startsWith(productionUrl);
 
-  function optimizedSrc(src, transformationsObject) {
-    return \`https://quickr-cdn.quickr.dev/\${transformationsAsString(transformationsObject)}/\${src}\`
+    return isProduction;
   }
 
-  function optimizedSrcSet(src, transformationsObject) {
+  function getSrc(src, transformationsObject) {
+    return [
+      quickrUrl,
+      transformationsAsString(transformationsObject),
+      src,
+    ].join("/");
+  }
+
+  function getSrcSet(src, transformationsObject) {
     transformationsObject.fit ||= "scale-down";
 
     if (transformationsObject.width) {
       return \`
-        \${optimizedSrc(src, transformationsObject)} 1x,
-        \${optimizedSrc(src, {...transformationsObject, width: Math.min(transformationsObject.width * 2, 1920)})} 2x
+        \${getSrc(src, transformationsObject)} 1x,
+        \${getSrc(src, {
+          ...transformationsObject,
+          width: Math.min(transformationsObject.width * 2, 1920),
+        })} 2x
       \`;
     } else {
       return \`
-        \${optimizedSrc(src, {...transformationsObject, width: 640})} 640w,
-        \${optimizedSrc(src, {...transformationsObject, width: 960})} 960w,
-        \${optimizedSrc(src, {...transformationsObject, width: 1200})} 1200w,
-        \${optimizedSrc(src, {...transformationsObject, width: 1600})} 1600w,
-        \${optimizedSrc(src, {...transformationsObject, width: 1920})} 1920w
+        \${getSrc(src, { ...transformationsObject, width: 640 })} 640w,
+        \${getSrc(src, { ...transformationsObject, width: 960 })} 960w,
+        \${getSrc(src, { ...transformationsObject, width: 1200 })} 1200w,
+        \${getSrc(src, { ...transformationsObject, width: 1600 })} 1600w,
+        \${getSrc(src, { ...transformationsObject, width: 1920 })} 1920w
       \`;
     }
   }
@@ -279,12 +286,21 @@ const VanillaTabPanel = () => {
    * @param {String} transformations e.g. 'width=800,fit=scale-down'
    * @return {Object} e.g. {width: 800, fit: 'scale-down'}
    */
-  function transformationsAsObject(transformations) {
+  function transformationsAsObject(img) {
+    const { transformations = "" } = img.dataset;
+    const transformationsObject = {};
+
+    if (img.width) transformationsObject.width = img.width;
+    if (img.height) transformationsObject.height = img.height;
+
     return Object.fromEntries(
-      transformations.split(',').filter(Boolean).map(pair => {
-        const [key, value] = pair.split('=');
-        return [key, isNaN(value) ? value : Number(value)];
-      })
+      transformations
+        .split(",")
+        .filter(Boolean)
+        .map((pair) => {
+          const [key, value] = pair.split("=");
+          return [key, isNaN(value) ? value : Number(value)];
+        })
     );
   }
 
@@ -296,23 +312,21 @@ const VanillaTabPanel = () => {
     return Object.entries(transformationsObject)
       .filter(([_key, value]) => Boolean(value))
       .map(([key, value]) => \`\${key}=\${value}\`)
-      .join(',');
+      .join(",");
   }
 })();
 `
+
   const indexHtml = `
-<div style="display: flex; gap: 10px;">
-  <img data-src="https://assets.quickr.dev/example.jpeg" width="300" />
-  <img data-src="https://assets.quickr.dev/example.jpeg" data-transformations="width=300" />
+<div style="width: 400px;">
+  <img data-src="image.jpeg" width="100%" />
 </div>
 
-<div style="display: flex; gap: 10px; margin-top: 10px; align-items: start;">
-  <div style="width: 400px">
-    <img data-src="https://assets.quickr.dev/example2.jpeg" width="100%" />
-  </div>
-
-  <img data-src="https://assets.quickr.dev/example2.jpeg" width="400" data-transformations="blur=30,rotate=180" />
-</div>
+<img
+  data-src="https://assets.quickr.dev/example.jpeg"
+  width="300"
+  data-transformations="sharpen=2,brightness=1,contrast=1"
+/>
 
 <script src="./quickr.js" defer></script>
 `
@@ -336,8 +350,8 @@ const VanillaTabPanel = () => {
       <CodeHighlightTabs
         mt="xl"
         code={[
-          { fileName: "quickr.js", code: scriptJs, language: "js", icon: <IconBrandTypescript size={18} /> },
           { fileName: "index.html", code: indexHtml, language: "html", icon: <IconFileTypeHtml size={18} /> },
+          { fileName: "quickr.js", code: scriptJs, language: "js", icon: <IconBrandTypescript size={18} /> },
         ]}
       />
     </Tabs.Panel>
