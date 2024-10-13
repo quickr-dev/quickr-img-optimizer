@@ -7,7 +7,6 @@ import {
   ColorSchemeScript,
   createTheme,
   DEFAULT_THEME,
-  InputWrapper,
   MantineProvider,
   Modal,
   TableTd,
@@ -54,12 +53,11 @@ const theme = createTheme({
   primaryColor: "gray",
   primaryShade: 9,
   components: {
-    InputWrapper: InputWrapper.extend({
-      defaultProps: {
-        inputWrapperOrder: ["label", "input", "error", "description"],
-      },
-    }),
-
+    // InputWrapper: InputWrapper.extend({
+    //   defaultProps: {
+    //     inputWrapperOrder: ["label", "input", "description", "error"],
+    //   },
+    // }),
     Modal: Modal.extend({
       defaultProps: {
         padding: "xl",
@@ -77,6 +75,7 @@ const theme = createTheme({
     TableTd: TableTd.extend({
       defaultProps: {
         p: "md",
+        valign: "baseline",
       },
     }),
   },

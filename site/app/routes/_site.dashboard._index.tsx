@@ -1,7 +1,7 @@
 import { getAuth } from "@clerk/remix/ssr.server"
 import { ActionIcon, Button, Card, Container, Flex, Menu, Stack, Table, Text, Title } from "@mantine/core"
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare"
-import { json, useLoaderData } from "@remix-run/react"
+import { Form, json, useLoaderData } from "@remix-run/react"
 import { IconDots, IconPlus, IconTrash } from "@tabler/icons-react"
 import { A } from "~/components/ui/A"
 import { pageTitle } from "~/lib/pageTitle"
@@ -39,7 +39,7 @@ export default function Page() {
   const { subdomains } = useLoaderData<typeof loader>()
 
   return (
-    <Container size="sm">
+    <Container size="md">
       <Flex align="center" gap="md" mb="xl">
         <Title order={2}>Subdomains</Title>
 
@@ -63,7 +63,7 @@ export default function Page() {
         <Table>
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Subdomain</Table.Th>
+              <Table.Th>URL</Table.Th>
               <Table.Th>Image domains</Table.Th>
               <Table.Th>Created</Table.Th>
               <Table.Th></Table.Th>
@@ -72,8 +72,8 @@ export default function Page() {
           <Table.Tbody>
             {subdomains.map((subdomain) => (
               <Table.Tr key={subdomain.id}>
-                <Table.Td>{subdomain.slug}</Table.Td>
-                <Table.Td>{subdomain.imageDomains}</Table.Td>
+                <Table.Td>https://{subdomain.slug}-cdn.quickr.dev</Table.Td>
+                <Table.Td style={{ whiteSpace: "pre-line" }}>{subdomain.imageDomains}</Table.Td>
                 <Table.Td>{subdomain.createdAt}</Table.Td>
                 <Table.Td>
                   <Menu>
@@ -83,9 +83,18 @@ export default function Page() {
                       </ActionIcon>
                     </Menu.Target>
                     <Menu.Dropdown>
-                      <Menu.Item color="red" leftSection={<IconTrash size={14} />}>
-                        Remove
-                      </Menu.Item>
+                      <Form method="post" action="/dashboard/subdomains/delete">
+                        <input type="hidden" name="id" value={subdomain.id} />
+
+                        <Menu.Item
+                          component="button"
+                          type="submit"
+                          color="red"
+                          leftSection={<IconTrash size={14} />}
+                        >
+                          Remove
+                        </Menu.Item>
+                      </Form>
                     </Menu.Dropdown>
                   </Menu>
                 </Table.Td>
