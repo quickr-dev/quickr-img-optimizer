@@ -1,6 +1,6 @@
 // test/index.spec.ts
 import { describe, expect, it } from "vitest"
-import { getImageURL, getTransformations } from "../src/index"
+import { getImageURL, getTransformations, isImgFromAllowedDomain } from "../src/index"
 
 // For now, you'll need to do something like this to get a correctly-typed
 // `Request` to pass to `worker.fetch()`.
@@ -51,6 +51,22 @@ describe("getImageURL", () => {
 		expect(getImageURL(url(INVALID_IMAGE_URL))).toEqual(null)
 		expect(getImageURL(url(INVALID_PARAMS_URL))).toEqual(null)
 		expect(getImageURL(url(DOMAIN_URL))).toEqual(null)
+	})
+})
+
+describe("isImgFromAllowedDomain", () => {
+	it("works", async () => {
+		expect(
+			isImgFromAllowedDomain("https://assets.quickr.dev/example2.jpeg", "quickr.dev\nassets.quickr.dev\nexample.com")
+		).toEqual(true)
+
+		// test apex domain
+		expect(isImgFromAllowedDomain("https://assets.quickr.dev/example2.jpeg", "quickr.dev\nexample.com")).toEqual(true)
+
+		// test closely named domain
+		expect(
+			isImgFromAllowedDomain("https://assets.quickr.dev/example2.jpeg", "nada.dev\nexample.com\nquick.dev")
+		).toEqual(false)
 	})
 })
 

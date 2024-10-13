@@ -1,5 +1,5 @@
-export const INVALID_URL = "Invalid URL. Please, check the documentation."
-export const INVALID_CUSTOMER = "Invalid subdomain. Please, check the documentation."
+export const INVALID_URL = "Subdomain not found"
+export const SUBDOMAIN_NOT_FOUND = "Invalid subdomain. Please, check the documentation."
 export const DOMAIN_NOT_ALLOWED = "The image domain is not whitelisted."
 
 export default {
@@ -8,46 +8,46 @@ export default {
 		const imageURL = getImageURL(url)
 		if (!imageURL) return new Response(INVALID_URL, { status: 400 })
 
-		const customerSlug = getCustomerSlug(url)
+		// const getSubdomainBySlug = async (slug: string) => {
+		// 	return env.DB.prepare("SELECT * FROM Subdomain WHERE slug = ?").bind(slug).first<Subdomain>()
+		// }
 
-		if (customerSlug !== "quickr-cdn") {
-			const customer = await env.DB.prepare("SELECT id, allowedDomains, remainingQuota FROM Customer WHERE slug = ?")
-				.bind(customerSlug)
-				.first<{ allowedDomains: string; quota: number; id: string }>()
+		// if (slug !== "quickr") {
+		// 	const subdomain = await getSubdomainBySlug(slug)
 
-			if (!customer) {
-				return new Response(INVALID_CUSTOMER, { status: 404 })
-			}
+		// 	if (!subdomain) {
+		// 		return new Response(SUBDOMAIN_NOT_FOUND, { status: 404 })
+		// 	}
 
-			if (!isImgFromAllowedDomain(imageURL, customer.allowedDomains)) {
-				return new Response(DOMAIN_NOT_ALLOWED, { status: 403 })
-			}
+		// 	if (!isImgFromAllowedDomain(imageURL, subdomain.imageDomains)) {
+		// 		return new Response(DOMAIN_NOT_ALLOWED, { status: 403 })
+		// 	}
 
-			ctx.waitUntil(
-				new Promise(async (resolve) => {
-					const existingTransformation = await env.DB.prepare(
-						"SELECT id FROM Transformation WHERE customerId = ? AND pathname = ? AND billablePeriod = strftime('%Y-%m', 'now')"
-					)
-						.bind(customer.id, url.pathname)
-						.first<{ id: string }>()
+		// 	ctx.waitUntil(
+		// 		new Promise(async (resolve) => {
+		// 			const existingTransformation = await env.DB.prepare(
+		// 				"SELECT id FROM Transformation WHERE customerId = ? AND pathname = ? AND billablePeriod = strftime('%Y-%m', 'now')"
+		// 			)
+		// 				.bind(subdomain.id, url.pathname)
+		// 				.first<{ id: string }>()
 
-					if (existingTransformation) {
-						return resolve(null)
-					}
+		// 			if (existingTransformation) {
+		// 				return resolve(null)
+		// 			}
 
-					await Promise.all([
-						env.DB.prepare("INSERT OR IGNORE INTO Transformation(customerId, pathname) VALUES(?, ?)")
-							.bind(customer.id, url.pathname)
-							.run(),
-						env.DB.prepare("UPDATE Customer SET remainingQuota = remainingQuota - 1 WHERE id = ?")
-							.bind(customer.id)
-							.run(),
-					])
+		// 			await Promise.all([
+		// 				env.DB.prepare("INSERT OR IGNORE INTO Transformation(customerId, pathname) VALUES(?, ?)")
+		// 					.bind(subdomain.id, url.pathname)
+		// 					.run(),
+		// 				env.DB.prepare("UPDATE Customer SET remainingQuota = remainingQuota - 1 WHERE id = ?")
+		// 					.bind(subdomain.id)
+		// 					.run(),
+		// 			])
 
-					resolve(null)
-				})
-			)
-		}
+		// 			resolve(null)
+		// 		})
+		// 	)
+		// }
 
 		const options = { cf: { image: getTransformations(url, req.headers.get("Accept")) } }
 
@@ -81,14 +81,17 @@ export function getImageURL(url: URL) {
 	return null
 }
 
-export function getCustomerSlug(url: URL) {
-	return url.hostname.split(".")[0]
+export function getSlug(url: URL) {
+	const subdomain = url.hostname.split(".")[0]
+	const slug = subdomain.split("-")[0]
+	return slug
 }
 
-export function isImgFromAllowedDomain(imageURL: string, allowedDomains?: string): boolean {
-	if (!allowedDomains) return false
+export function isImgFromAllowedDomain(imageURL: string, imageDomains?: string): boolean {
+	const domains = (imageDomains || "").split(/\s+/).filter(Boolean)
+	if (domains.length === 0) return false
 
 	const imgDomain = new URL(imageURL).hostname
 
-	return allowedDomains.includes(imgDomain)
+	return domains.some((domain) => imgDomain.endsWith(domain))
 }

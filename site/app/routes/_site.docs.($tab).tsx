@@ -88,7 +88,7 @@ const IntroTabPanel = () => {
 const TransformationsTabPanel = () => {
   return (
     <Tabs.Panel value="transformations">
-      We support the same transformations as Cloudflare.
+      Quickr uses Cloudflare and thus support the same transformations.
       <br />
       <br />
       Please refer to the{" "}

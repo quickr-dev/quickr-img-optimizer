@@ -6,7 +6,7 @@ import { A } from "~/components/ui/A"
 const Links = [
   { href: "/", label: "Home" },
   { href: "/docs", label: "Docs" },
-  { href: "/pricing", label: "Pricing" },
+  // { href: "/pricing", label: "Pricing" },
 ]
 
 export default function Layout() {

@@ -19,15 +19,21 @@ export default function Index() {
         <Text fz={"xl"} c="gray.6" mt="lg">
           Lightning fast image optimization, transformation, and global CDN
           <br />
-          for productivity-focused development teams.
+          for productivity-focused teams.
         </Text>
 
         <Flex mt={"xl"} gap="lg" justify="center">
-          <Button radius="xl">Start for free</Button>
+          <Button radius="xl" component={A} to="/sign-up">
+            Start for free *
+          </Button>
           <Button radius="xl" variant="outline" component={A} to="/docs">
             How it works
           </Button>
         </Flex>
+
+        <Text mt="xs" fz="sm">
+          * Free during beta, then 2x cheaper than Vercel images
+        </Text>
       </Box>
 
       <SimpleGrid cols={{ md: 2, sm: 1 }}>
