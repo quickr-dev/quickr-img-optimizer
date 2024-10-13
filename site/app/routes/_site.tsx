@@ -66,6 +66,12 @@ export default function Layout() {
             </A>
           ))}
         </Flex>
+
+        <Box ta="center" mt="lg">
+          <A to="/legal" size="xs" c="dimmed">
+            Terms of Use and Privacy Policy
+          </A>
+        </Box>
       </Container>
     </>
   )

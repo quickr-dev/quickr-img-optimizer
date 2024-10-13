@@ -4,7 +4,8 @@ import { useState } from "react"
 
 import { CodeHighlightTabs } from "@mantine/code-highlight"
 import "@mantine/code-highlight/styles.css"
-import { IconBrandTypescript, IconFileTypeHtml } from "@tabler/icons-react"
+import { IconBrandJavascript, IconBrandTypescript, IconFileTypeHtml } from "@tabler/icons-react"
+import { A } from "~/components/ui/A"
 import { pageTitle } from "~/lib/pageTitle"
 
 export const meta: MetaFunction = () => {
@@ -45,7 +46,7 @@ export default function Index() {
         </Tabs.Tab>
       </Tabs.List>
 
-      <Container size="sm" ml={0}>
+      <Container size="sm" ml={0} w="100%">
         <IntroTabPanel />
         <TransformationsTabPanel />
         <NextImageTabPanel />
@@ -92,9 +93,9 @@ const TransformationsTabPanel = () => {
       <br />
       <br />
       Please refer to the{" "}
-      <a href="https://developers.cloudflare.com/images/transform-images/transform-via-url/#options">
+      <A to="https://developers.cloudflare.com/images/transform-images/transform-via-url/#options">
         Cloudflare docs
-      </a>
+      </A>
       .
     </Tabs.Panel>
   )
@@ -102,29 +103,34 @@ const TransformationsTabPanel = () => {
 
 const NextImageTabPanel = () => {
   const imageLoaderJS = `
-// Update variables below as necessary
-const optimizeOnlyInProduction = true
-const isProduction = process.env.VERCEL_ENV === 'production'
-const origin = process.env.VERCEL_PROJECT_PRODUCTION_URL ? \`https://\${process.env.VERCEL_PROJECT_PRODUCTION_URL}\` : null
+const productionUrl = 'https://next-image.quickr.dev'; // For Vercel use \`https://\${process.env.VERCEL_PROJECT_PRODUCTION_URL}\`
+const quickrUrl = 'https://quickr-cdn.quickr.dev'; // Replace with your subdomain
 
 export default function loader({ src, width, quality }) {
-  if (optimizeOnlyInProduction && !isProduction) {
-    return src
-  }
-  if (src.startsWith('http')) {
-    return optimizedSrc(src, width, quality)
-  }
-  if (origin) {
-    return optimizedSrc(\`\${origin}\${src}\`, width, quality)
+  if (!shouldOptimize(src)) {
+    return src;
   }
 
-  // Do not optimize relative URLs
-  return src
+  if (src.startsWith("http")) {
+    return quickrSrc(src, width, quality);
+  }
+
+  return quickrSrc(\`\${productionUrl}\${src}\`, width, quality);
 }
 
-function optimizedSrc(src, width, quality) {
-  const params = [\`width=\${width}\`, \`quality=\${quality || 75}\`]
-  return \`https://quickr-cdn.quickr.dev/\${params.join(",")}/\${src}\`
+function shouldOptimize() {
+  const isProduction =
+    process.env.VERCEL_ENV === "production" ||
+    process.env.NODE_ENV === "production";
+
+  return isProduction;
+}
+
+function quickrSrc(src, width, quality) {
+  const params = [\`width=\${width}\`];
+  if (quality) params.push(\`quality=\${quality}\`);
+
+  return [quickrUrl, params.join(","), src].join("/");
 }`
 
   const nextConfigMjs = `
@@ -157,36 +163,46 @@ export default function Page() {
       <Text>Use the loader prop of loader file to update the URL.</Text>
       <List>
         <ListItem>
-          <a href="https://nextjs.org/docs/pages/api-reference/components/image#loader">
+          <A to="https://nextjs.org/docs/pages/api-reference/components/image#loader">
             <Code>loader</Code> prop docs
-          </a>
+          </A>
         </ListItem>
         <ListItem>
-          <a href="https://nextjs.org/docs/pages/api-reference/components/image#loaderfile">
-            Loader file docs
-          </a>
+          <A to="https://nextjs.org/docs/pages/api-reference/components/image#loaderfile">Loader file docs</A>
         </ListItem>
       </List>
 
       <Text mt="md">Live demo and code:</Text>
       <List>
         <ListItem>
-          <a href="https://quickr-nextjs.pages.dev">https://quickr-nextjs.pages.dev</a>
+          <A to="https://next-image.quickr.dev">https://next-image.quickr.dev</A>
         </ListItem>
         <ListItem>
-          <a href="https://github.com/quickr-dev/quickr-nextjs">
-            https://github.com/quickr-dev/quickr-nextjs
-          </a>
+          <A to="https://github.com/quickr-dev/quickr-nextjs">https://github.com/quickr-dev/quickr-nextjs</A>
         </ListItem>
       </List>
 
       <CodeHighlightTabs
         mt="xl"
-        getFileIcon={() => <IconBrandTypescript size={18} />}
         code={[
-          { fileName: "imageLoader.js", code: imageLoaderJS, language: "tsx" },
-          { fileName: "next.config.mjs", code: nextConfigMjs, language: "tsx" },
-          { fileName: "app/page.tsx", code: pageTsx, language: "tsx" },
+          {
+            fileName: "imageLoader.js",
+            code: imageLoaderJS,
+            language: "js",
+            icon: <IconBrandJavascript size={18} />,
+          },
+          {
+            fileName: "next.config.mjs",
+            code: nextConfigMjs,
+            language: "mjs",
+            icon: <IconBrandJavascript size={18} />,
+          },
+          {
+            fileName: "app/page.tsx",
+            code: pageTsx,
+            language: "tsx",
+            icon: <IconBrandTypescript size={18} />,
+          },
         ]}
       />
     </Tabs.Panel>
@@ -227,7 +243,7 @@ const VanillaTabPanel = () => {
       img.src = optimizedSrc(src, transformationsObject);
       img.srcset = optimizedSrcSet(src, transformationsObject);
     } else if (isProduction) {
-      // 'src' is a relative path, e.g. "/images/example.jpg"
+      // 'src' is A relative path, e.g. "/images/example.jpg"
       img.src = optimizedSrc(\`\${origin}\${src}\`, transformationsObject);
       img.srcset = optimizedSrcSet(src, transformationsObject);
     } else {
@@ -308,12 +324,12 @@ const VanillaTabPanel = () => {
       <Text mt="md">Live demo and code:</Text>
       <List>
         <ListItem>
-          <a href="https://vanilla-example.pages.dev">https://vanilla-example.pages.dev</a>
+          <A to="https://vanilla-js.quickr.dev">https://vanilla-js.quickr.dev</A>
         </ListItem>
         <ListItem>
-          <a href="https://github.com/rafbgarcia/vanilla-example">
-            https://github.com/rafbgarcia/vanilla-example
-          </a>
+          <A to="https://github.com/quickr-dev/quickr-vanilla-js">
+            https://github.com/quickr-dev/quickr-vanilla-js
+          </A>
         </ListItem>
       </List>
 

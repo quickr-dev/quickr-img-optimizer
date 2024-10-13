@@ -27,7 +27,8 @@
     "@tabler/icons-react": "^3.19.0",
     "isbot": "5.1.17",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "react-markdown": "9.0.1"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "4.20240925.0",
