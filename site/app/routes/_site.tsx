@@ -15,7 +15,7 @@ export default function Layout() {
       <Container component="header" mt="md" mb={60}>
         <Flex align="center">
           <Box w="20vw">
-            <A to="/" underline="never" c="black" fw={600} fz="lg">
+            <A to="/" underline="never" c="black" fw={600} fz="xl">
               Quickr
             </A>
           </Box>

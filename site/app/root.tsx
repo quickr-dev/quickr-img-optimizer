@@ -7,6 +7,7 @@ import {
   ColorSchemeScript,
   createTheme,
   DEFAULT_THEME,
+  InputWrapper,
   MantineProvider,
   Modal,
   TableTd,
@@ -53,6 +54,12 @@ const theme = createTheme({
   primaryColor: "gray",
   primaryShade: 9,
   components: {
+    InputWrapper: InputWrapper.extend({
+      defaultProps: {
+        inputWrapperOrder: ["label", "input", "error", "description"],
+      },
+    }),
+
     Modal: Modal.extend({
       defaultProps: {
         padding: "xl",
@@ -108,7 +115,7 @@ export default ClerkApp(App, {
   signInUrl: "/sign-in",
   signUpUrl: "/sign-up",
   signInFallbackRedirectUrl: "/dashboard",
-  signUpFallbackRedirectUrl: "/sign-up-success",
+  signUpFallbackRedirectUrl: "/dashboard",
 })
 
 const Progress = () => {

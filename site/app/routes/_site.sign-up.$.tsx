@@ -1,7 +1,11 @@
 import { SignUp } from "@clerk/remix"
 import { getAuth } from "@clerk/remix/ssr.server"
 import { Stack } from "@mantine/core"
-import { LoaderFunctionArgs } from "@remix-run/cloudflare"
+import { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare"
+
+export const meta: MetaFunction = () => {
+  return [{ title: "Sign Up | Quickr" }]
+}
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const { userId } = await getAuth(args)
