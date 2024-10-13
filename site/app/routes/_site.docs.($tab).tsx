@@ -61,7 +61,13 @@ const IntroTabPanel = () => {
   return (
     <Tabs.Panel value="intro">
       <Text>
-        Simply load images via <Code>https://quickr-cdn.quickr.dev/TRANSFORMATIONS/IMAGE_URL</Code>
+        Simply load images via your quickr subdomain, e.g.{" "}
+        <Code>https://YOUR_SLUG-cdn.quickr.dev/TRANSFORMATIONS/IMAGE_URL</Code>
+      </Text>
+
+      <Text mt="lg">
+        During beta, <Code>quickr-cdn</Code> will be available. However, create an account and use your own
+        subdomain in production to ensure you are notified when the beta ends and avoid service disruption.
       </Text>
 
       <Text mt="lg" fw={500}>
