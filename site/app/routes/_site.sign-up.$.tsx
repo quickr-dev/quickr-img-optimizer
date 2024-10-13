@@ -10,6 +10,7 @@ export const meta: MetaFunction = () => {
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const { userId } = await getAuth(args)
+
   if (userId) {
     const { DB } = args.context.cloudflare.env
     await DB.prepare(`INSERT OR IGNORE INTO Customer(userId) VALUES(?)`).bind(userId).run()
