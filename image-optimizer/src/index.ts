@@ -66,7 +66,8 @@ export function getTransformations(url: URL, accept?: string | null) {
 		return acc;
 	}, {});
 
-	if (accept?.includes("avif")) transf.format = "avif";
+	if (transf.format) transf.format = transf.format;
+	else if (accept?.includes("avif")) transf.format = "avif";
 	else if (accept?.includes("webp")) transf.format = "webp";
 
 	return transf;
